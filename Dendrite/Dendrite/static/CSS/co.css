@@ -1,1 +1,33 @@
-/* No CSS */
+.cd-fixed-bg {
+  min-height: 100vh;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.cd-fixed-bg.cd-fixed-bg--1 {
+  -webkit-box-shadow: inset 200px 200px 200px 10000px rgba(0, 0, 0, 0.2);
+          box-shadow: inset 200px 200px 200px 10000px rgba(0, 0, 0, 0.2);
+  background-image: url("../Images/bg.png");
+  padding: 60px;
+}
+
+.cd-scrolling-bg {
+  min-height: 100%;
+}
+
+.stickypage {
+  background-color: white;
+  width: 800px;
+  height: 1500px;
+  padding: 50px;
+  border-radius: 5px;
+  margin: auto;
+  -webkit-box-shadow: 10px 10px 30px 30px rgba(0, 0, 0, 0.1);
+          box-shadow: 10px 10px 30px 30px rgba(0, 0, 0, 0.1);
+}
+
+html {
+  height: 100%;
+}
