@@ -25,6 +25,7 @@ SOFTWARE.
 THIS CODE IS WRITTEN BY MANAS M HEJMADI
 '''
 #==========================================================LICENSE================================================
+
 from flask import render_template, url_for, flash, redirect, request, send_file
 from Dendrite import app, db, bcrypt
 from Dendrite.forms import RegistrationForm, LoginForm, CreateTender, CreateAsset
