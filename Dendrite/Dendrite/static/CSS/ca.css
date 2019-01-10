@@ -1,0 +1,20 @@
+.main {
+  padding: 10px 40px;
+}
+
+.propertylist {
+  max-height: 460px;
+  width: 730px;
+  overflow-y: scroll;
+  border: 1px solid #1c1c1c;
+  float: left;
+  margin-left: 10px;
+}
+
+.cp {
+  border: 2px solid #1c1c1c;
+  padding: 20px;
+  float: left;
+  margin-left: 20px;
+  width: 500px;
+}

@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="main">
+    {% if current_user.role == "Manufacturer" %}
+    <center><h1>Manufacturer Dashboard</h1></center>
+    <br>
+    <div class="ctable table-responsive ">
+        <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Contract ID</th>
+                <th scope="col">Vendor Name</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>  
+            {% for contract in contracts %}
+                {% if contract.status == "Acknowledged" %}
+                    <tr class="table-warning">
+                        <th scope="row"><a href="{{url_for('manufacturerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
+                        <td>{{contract.username}}</td>
+                        <td>{{contract.status}}</td>
+                    </tr>
+                {% elif contract.status == "Approved"%}
+                    <tr class="table-success">
+                        <th scope="row"><a href="{{url_for('manufacturerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
+                        <td>{{contract.username}}</td>
+                        <td>{{contract.status}}</td>
+                    </tr>
+                {% elif contract.status == "Rejected"%}
+                    <tr class="table-danger">
+                        <th scope="row"><a href="{{url_for('manufacturerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
+                        <td>{{contract.username}}</td>
+                        <td>{{contract.status}}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <th scope="row"><a href="{{url_for('manufacturerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
+                        <td>{{contract.username}}</td>
+                        <td>{{contract.status}}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    <div class="cdetails">
+        {% if cdesc %}
+            <h1 id="cname">{{cdesc.contract_id}}</h1><br>
+            <h5>Role: <span class="text-muted">{{cdesc.role}}</span></h5>
+            <h5>Name: <span class="text-muted">{{cdesc.username}}</span></h5>
+            <h5>Date Of Issue: <span class="text-muted">{{cdesc.contract_date}}</span></h5>
+            <h5>Vendor Address: <span class="text-muted">{{cdesc.contract_address}}</span></h5>
+            <a href="{{url_for('get_contract', fn=cdesc.contract_file)}}">Click to View the Tender Document</a
+        {% else %}
+            <h1 id="cname">CT-0000</h1><br>
+            <h5>Role: <span class="text-muted">None</span></h5>
+            <h5>Name: <span class="text-muted">None</span></h5>
+            <h5>Date Of Issue: <span class="text-muted">None</span></h5>
+            <h5>Address: <span class="text-muted">None</span></h5>
+            <a href="#">No Tender Document Available</a>
+        {% endif %}
+        <br><br><br>
+        <div class="btngroup">
+        <input type="button" value="Delete Tender" class="btn btn-danger btn-block">
+        </div>
+    </div>
+    <div class="clear"></div>
+    {% else %}
+        <h1>This Page is accessible only to a Manufacturer</h1>
+    {% endif %}
+</div>
+{% endblock content %}

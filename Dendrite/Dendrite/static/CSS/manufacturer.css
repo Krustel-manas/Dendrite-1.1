@@ -1,0 +1,32 @@
+.main {
+  padding: 20px;
+}
+
+.cc {
+  margin-left: 20px;
+}
+
+.ctable {
+  float: left;
+  width: 770px;
+  border: 2px solid #1c1c1c;
+}
+
+.table-responsive {
+  max-height: 480px;
+}
+
+.cdetails {
+  float: left;
+  width: 500px;
+  margin-left: 30px;
+  border: 2px solid #1c1c1c;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.089);
+}
+
+#cname {
+  font-size: 4em;
+  margin: 0px;
+  padding: 2px;
+}

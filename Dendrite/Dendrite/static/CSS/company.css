@@ -1,0 +1,47 @@
+.main {
+  padding: 10px;
+  margin: auto;
+}
+
+.ctable {
+  float: left;
+  width: 800px;
+  border: 2px solid #1c1c1c;
+}
+
+.table-responsive {
+  max-height: 480px;
+}
+
+.cdetails {
+  float: left;
+  width: 500px;
+  margin-left: 25px;
+  border: 2px solid #1c1c1c;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.089);
+}
+
+.clear {
+  clear: both;
+}
+
+#cname {
+  font-size: 4em;
+  margin: 0px;
+  padding: 2px;
+}
+
+.cc {
+  margin-left: 20px;
+}
+
+.fb {
+  margin: 5px;
+}
+
+.content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}

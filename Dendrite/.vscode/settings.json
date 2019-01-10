@@ -1,0 +1,10 @@
+{
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "expanded",
+            "extensionName": ".css",
+            "savePath": "/Dendrite/static/CSS/"
+        }
+    ],
+    "python.pythonPath": "C:/Users/manas/Anaconda3/python36.exe"
+}
