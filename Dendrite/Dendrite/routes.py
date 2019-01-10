@@ -99,6 +99,10 @@ def logout():
 	logout_user()
 	return redirect(url_for('homepage'))
 
+@app.route("/checkorigin")
+def checkorigin():
+	return render_template("checkorigin.html", name='co', title="Check Origin")
+
 @app.route("/vendors")
 @login_required
 def vendorpage():
