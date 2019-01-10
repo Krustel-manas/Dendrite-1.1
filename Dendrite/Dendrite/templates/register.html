@@ -1,54 +1,58 @@
 {% extends 'layout.html' %}
 {% block content %}
-<form action="" method="post" class="frm">
-    {{ form.hidden_tag()}}
-    <legend>Sign Up to Dendrite</legend><hr>
-    <div class="form-group">
-        <label for="">Select your role: </label>
-        {{form.role(class='form-control')}}
-        <small id="rolehelp" class="form-text text-muted">The role describes your specific role in the Supply Chain Process</small>
-    </div>
-    <div class="form-group">
-        <label for="">Enter Desired Username: </label>
-        {% if form.username.errors %}
-            {{ form.username(class="form-control is-invalid", placeholder="Username") }}
-            <div class="invalid-feedback">
-                {% for error in form.username.errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
+    <div class="cd-fixed-bg cd-fixed-bg--1">
+        <div class="stickypage">
+            <form action="" method="post" class="frm">
+            {{ form.hidden_tag()}}
+            <legend>Sign Up to Dendrite</legend><hr>
+            <div class="form-group">
+                <label for="">Select your role: </label>
+                {{form.role(class='form-control')}}
+                <small id="rolehelp" class="form-text text-muted">The role describes your specific role in the Supply Chain Process</small>
             </div>
-        {% else %}
-            {{ form.username(class="form-control", placeholder="Username") }}
-        {% endif %}
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Enter Password</label>
-        {% if form.password.errors %}
-            {{ form.password(class="form-control is-invalid", placeholder="Password") }}
-            <div class="invalid-feedback">
-                {% for error in form.password.errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
+            <div class="form-group">
+                <label for="">Enter Desired Username: </label>
+                {% if form.username.errors %}
+                    {{ form.username(class="form-control is-invalid", placeholder="Username") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.username(class="form-control", placeholder="Username") }}
+                {% endif %}
             </div>
-        {% else %}
-            {{ form.password(class="form-control", placeholder="Password") }}
-        {% endif %}
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Confirm Password</label>
-        {% if form.confirm_password.errors %}
-            {{ form.confirm_password(class="form-control is-invalid", placeholder="Confirm Password") }}
-            <div class="invalid-feedback">
-                {% for error in form.confirm_password.errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
+            <div class="form-group">
+                <label for="exampleInputPassword1">Enter Password</label>
+                {% if form.password.errors %}
+                    {{ form.password(class="form-control is-invalid", placeholder="Password") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.password(class="form-control", placeholder="Password") }}
+                {% endif %}
             </div>
-        {% else %}
-            {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
-        {% endif %}
-    </div>
-    <br>    
-    {{form.submit(class='btn btn-success btn-block')}}
-    <small id="dnacc" class="form-text text-muted">Already have a dendrite account? <a href="{{url_for('loginpage')}}">Log In</a></small>
-</form>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Confirm Password</label>
+                {% if form.confirm_password.errors %}
+                    {{ form.confirm_password(class="form-control is-invalid", placeholder="Confirm Password") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.confirm_password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
+                {% endif %}
+            </div>
+            <br>    
+            {{form.submit(class='btn btn-success btn-block')}}
+            <small id="dnacc" class="form-text text-muted">Already have a dendrite account? <a href="{{url_for('loginpage')}}">Log In</a></small>
+        </form>
+        </div>
+   </div>
 {% endblock content %}

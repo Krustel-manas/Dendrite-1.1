@@ -46,64 +46,58 @@
         {% endif %}
     {% endwith %}
 
-    <!--Navigation Bar-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light snav">
-    <a class="navbar-brand" href="{{url_for('homepage')}}">Dendrite 1.0</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+    {% if name != "co" and name !="login" and name != "register" and name != "cc"%}
+        <!--Navigation Bar-->
+        <div class="snav">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="{{url_for('homepage')}}">Dendrite 1.0</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-            {% if name == "cc"%} 
-                {% if current_user.role == "Manufacturer" %}
-                    <a class="nav-link" href="{{url_for('manufacturerpage')}}">Back</a>
-                {% elif current_user.role == "Vendor"%}
-                    <a class="nav-link" href="{{url_for('vendorpage')}}">Back</a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    {% if current_user.role == "Manufacturer" %}
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Manufacturer Actions
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{url_for('createasset')}}">Create Asset</a>
+                        <a class="dropdown-item" href="#">Transfer Asset</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{url_for('create_contract')}}">Create Contract</a>
+                    </div>
+                    {% else %}
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                    {% endif %}
+                </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                {% if current_user.is_authenticated %}
+                <input type="button" value="Click Here to Logout" onclick="window.location.href = '{{url_for('logout')}}';" class="btn btn-outline-danger my-2 my-sm-0">
+                {% else %}
+                <input type="button" value="Click Here to Login" onclick="window.location.href = '{{url_for('loginpage')}}';" class="btn btn-outline-primary my-2 my-sm-0">
                 {% endif %}
-            {% endif %}
-        </li>
-        <li class="nav-item dropdown">
-            {% if current_user.role == "Manufacturer" %}
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Manufacturer Actions
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{{url_for('createasset')}}">Create Asset</a>
-                <a class="dropdown-item" href="#">Transfer Asset</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{url_for('create_contract')}}">Create Contract</a>
+                {% if name == "cc" %}
+            
+                {% endif %}
+                {% if current_user.role == "Vendor" and name != "cc"%}
+                <input type="button" value="Create Contract" class="btn btn-warning cc" onclick="window.location.href = '{{url_for('create_contract')}}'">
+                {% endif %}
+                </form>
             </div>
-            {% else %}
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Actions
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-            {% endif %}
-        </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-        {% if current_user.is_authenticated %}
-        <input type="button" value="Click Here to Logout" onclick="window.location.href = '{{url_for('logout')}}';" class="btn btn-outline-danger my-2 my-sm-0">
-        {% else %}
-        <input type="button" value="Click Here to Login" onclick="window.location.href = '{{url_for('loginpage')}}';" class="btn btn-outline-primary my-2 my-sm-0">
-        {% endif %}
-        {% if name == "cc" %}
-    
-        {% endif %}
-        {% if current_user.role == "Vendor" and name != "cc"%}
-        <input type="button" value="Create Contract" class="btn btn-warning cc" onclick="window.location.href = '{{url_for('create_contract')}}'">
-        {% endif %}
-        </form>
-    </div>
-    </nav>
-
+            </nav>
+        </div>
+    {% endif %}
     <!--Body Content-->
     {% block content %}
     {% endblock content %}

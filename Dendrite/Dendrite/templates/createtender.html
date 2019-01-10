@@ -2,55 +2,61 @@
 {% block content %}
 <div class="main">
 {% if current_user.role != "Company" %}
-<form action="" method="post" class="frm" enctype="multipart/form-data">
-    {{ form.hidden_tag()}}
-    <legend>Create Tender</legend>
-    <div class="form-group">
-        <label for="">Contract ID</label>
-        {% if form.cid.errors %}
-            {{ form.cid(class="form-control is-invalid", placeholder="Contract ID") }}
-            <div class="invalid-feedback">
-                {% for error in form.cid.errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
-            </div>
-        {% else %}
-            {{ form.cid(class="form-control", placeholder="Contract ID") }}
-        {% endif %}
-    </div>
-    <div class="form-group">
-        <label for="">Date of Issue</label>
-        {% if form.doi.errors %}
-            {{ form.doi(class="form-control is-invalid", placeholder="Date Of Issue") }}
-            <div class="invalid-feedback">
-                {% for error in form.doi.errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
-            </div>
-        {% else %}
-            {{ form.doi(class="form-control", placeholder="Date of Issue") }}
-        {% endif %}
-    </div>
-    <div class="form-group">
-        <label for="">Vendor Address</label>
-        {% if form.vendor_address.errors %}
-            {{ form.vendor_address(class="form-control is-invalid", placeholder="Vendor Address") }}
-            <div class="invalid-feedback">
-                {% for error in form.vendor_address.errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
-            </div>
-        {% else %}
-            {{ form.vendor_address(class="form-control", placeholder="Vendor Address") }}
-        {% endif %}
-    </div>
-    {{form.file(multiple=True)}}
-    <br><br>
-    {{form.submit(class='btn btn-success btn-block')}}
-    
-</form>
+<div class="cd-fixed-bg cd-fixed-bg--1">
+        <div class="stickypage">
+            <form action="" method="post" class="frm" enctype="multipart/form-data">
+                {{ form.hidden_tag()}}
+                <legend>Create Tender</legend>
+                <div class="form-group">
+                    <label for="">Contract ID</label>
+                    {% if form.cid.errors %}
+                        {{ form.cid(class="form-control is-invalid", placeholder="Contract ID") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.cid.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.cid(class="form-control", placeholder="Contract ID") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="">Date of Issue</label>
+                    {% if form.doi.errors %}
+                        {{ form.doi(class="form-control is-invalid", placeholder="Date Of Issue") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.doi.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.doi(class="form-control", placeholder="Date of Issue") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="">Vendor Address</label>
+                    {% if form.vendor_address.errors %}
+                        {{ form.vendor_address(class="form-control is-invalid", placeholder="Vendor Address") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.vendor_address.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.vendor_address(class="form-control", placeholder="Vendor Address") }}
+                    {% endif %}
+                </div>
+                {{form.file(multiple=True)}}
+                <br><br>
+                {{form.submit(class='btn btn-success btn-block')}} 
+            </form>
+        </div>
+   </div> 
 {% else %}
 <h1>This Page is cannot be accessed by the Company</h1>
 {% endif %}
 </div>
+
+
+
 {% endblock content %}

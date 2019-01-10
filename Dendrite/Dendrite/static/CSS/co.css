@@ -19,7 +19,7 @@
 
 .stickypage {
   background-color: white;
-  width: 800px;
+  width: 900px;
   height: 1500px;
   padding: 50px;
   border-radius: 5px;
@@ -30,4 +30,10 @@
 
 html {
   height: 100%;
+}
+
+.frm {
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 10px;
 }

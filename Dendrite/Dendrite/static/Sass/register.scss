@@ -1,7 +1,38 @@
 .frm{
-    border: 2px solid rgb(28, 28, 28);
-    padding: 30px;
-    line-height: 1.8em;
+    padding: 20px;
+    line-height: 1.5em;
     margin: 4px;
     margin-top: 10px;
+}
+
+.cd-fixed-bg {  
+    min-height: 100vh;
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+  
+  .cd-fixed-bg.cd-fixed-bg--1 {
+    box-shadow: inset 200px 200px 200px 10000px rgba(0, 0, 0, 0.2);
+    background-image: url("../Images/bg.png");
+    padding: 20px;
+  }
+  
+  .cd-scrolling-bg {
+    min-height: 100%;
+  }
+
+  .stickypage{
+      background-color: white;
+      width: 900px;
+      height: 650px;
+      padding: 50px;
+      border-radius: 5px;
+      margin: auto;
+      box-shadow: 10px 10px 30px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  html { 
+    height: 100%;
 }
