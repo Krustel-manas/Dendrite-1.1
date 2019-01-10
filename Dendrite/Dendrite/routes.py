@@ -294,6 +294,8 @@ def deletecontract(c_id):
 	print(contract)
 	db.session.delete(contract)
 	db.session.commit()
+	# Delete Actual Contract from the Server
+	os.remove(os.path.join(app.root_path, 'static\\Contracts', contract.contract_file))
 	if current_user.role == "Vendor":
 		return redirect(url_for('vendorpage'))
 	elif current_user.role == "Manufacturer":
