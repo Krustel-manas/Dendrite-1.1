@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="main">
+{% if current_user.role in ("Manufacturer", "Logistics", "Retailer") %}
+    <div class="cd-fixed-bg cd-fixed-bg--1">
+        <div class="stickypage">
+            <legend>Transfer Asset Page</legend><hr>
+            <br><br>
+            <form action="" method="post" class="frm">
+                <h1 class="display-4">Asset Name</h1>
+                <br>
+                <input type="submit" value="Transfer" class="btn btn-success btn-block">
+            </form>
+        </div>
+    </div> 
+{% else %}
+<h1>This Page is only accessible by either a Manufacturer, Logistics Agent or a Retailer.</h1>
+{% endif %}
+</div>
+{% endblock content %}

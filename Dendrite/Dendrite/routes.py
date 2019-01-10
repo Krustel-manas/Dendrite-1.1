@@ -176,9 +176,15 @@ def retailerpage():
 	return render_template("retailerdashboard.html", name='retailer', title="Retailer Dashboard", contracts=contracts)
 
 # Customer Check Origin Page
-@app.route("/checkorigin")
+@app.route("/checkorigin", methods=['GET', 'POST'])
 def checkorigin():
 	return render_template("checkorigin.html", name='co', title="Check Origin")
+
+#Transfer Asset Page
+@app.route("/transferasset", methods=['GET', 'POST'])
+@login_required
+def transferassetpage():
+	return render_template("transferasset.html", name='ta', title="Transfer Asset")
 
 # ===================================================OTHER ROUTES==================================================
 
