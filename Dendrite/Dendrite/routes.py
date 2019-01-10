@@ -34,6 +34,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
 import os
 from Dendrite.bigchainuploader import CreateAndUploadGenesisBlock
+import datetime
 
 #GLOBAL STATE VARIABLES
 filter_on = False
@@ -128,7 +129,7 @@ def registerpage():
 @app.route("/logout")
 def logout():
 	logout_user()
-	return redirect(url_for('homepage'))
+	return redirect(url_for('loginpage'))
 
 # =================================================CORE PAGE ROUTES===============================================
 
@@ -187,6 +188,7 @@ def checkorigin():
 @login_required
 def create_contract():
 	form = CreateTender()
+	form.doi.data = datetime.datetime.now().strftime('%d-%m-%Y')
 	if form.validate_on_submit():
 		# Uploading the Contract
 		create_tender(form)
@@ -331,7 +333,6 @@ def contractfunctions(c_id, func):
 @login_required
 def deletecontract(c_id):
 	contract = Contract.query.filter_by(contract_id=c_id).first()
-	print(contract)
 	db.session.delete(contract)
 	db.session.commit()
 	# Delete Actual Contract from the Server

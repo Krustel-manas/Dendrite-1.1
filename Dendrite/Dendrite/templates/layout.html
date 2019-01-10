@@ -50,7 +50,7 @@
         {% endif %}
     {% endwith %}
 
-    {% if name != "co" and name !="login" and name != "register" and name != "cc"%}
+    {% if name not in ('co', 'login', 'register', 'cc')%}
         <!--Navigation Bar-->
         <div class="snav">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -62,6 +62,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
+
                     {% if current_user.role == "Manufacturer" %}
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Manufacturer Actions
@@ -86,16 +87,16 @@
                 </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
+                {% if not current_user.role %}
+                <input type="button" value="Check Product Origin" class="btn btn-info mr-2" onclick="window.location.href = '{{url_for('checkorigin')}}';">
+                {% endif %}
                 {% if current_user.is_authenticated %}
-                <input type="button" value="Click Here to Logout" onclick="window.location.href = '{{url_for('logout')}}';" class="btn btn-outline-danger my-2 my-sm-0">
+                <input type="button" value="Click Here to Logout" onclick="window.location.href = '{{url_for('logout')}}';" class="btn btn-danger my-2 my-sm-0">
                 {% else %}
-                <input type="button" value="Click Here to Login" onclick="window.location.href = '{{url_for('loginpage')}}';" class="btn btn-outline-primary my-2 my-sm-0">
+                <input type="button" value="Click Here to Login" onclick="window.location.href = '{{url_for('loginpage')}}';" class="btn btn-primary my-2 my-sm-0">
                 {% endif %}
-                {% if name == "cc" %}
-            
-                {% endif %}
-                {% if current_user.role == "Vendor" and name != "cc"%}
-                <input type="button" value="Create Contract" class="btn btn-warning cc" onclick="window.location.href = '{{url_for('create_contract')}}'">
+                {% if current_user.role in ('Vendor', 'Manufacturer', 'Logistics', 'Retailer')%}
+                <input type="button" value="Create Contract" class="btn btn-primary cc" onclick="window.location.href = '{{url_for('create_contract')}}'">
                 {% endif %}
                 </form>
             </div>
