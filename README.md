@@ -15,4 +15,7 @@ Known problems we wish to solve:
 
 This Project is currently in Version 1.0 and will omit crucial features. Important Features will be added once the current version is cited as stable
 
-Developers: Manas M Hejmadi, Yajat V Vishwakk, Rohan Kumar MV
+Developers: 
+* Manas M Hejmadi
+* Yajat V Vishwakk
+* Rohan Kumar MV
