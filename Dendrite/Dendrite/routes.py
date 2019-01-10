@@ -1,3 +1,30 @@
+# =========================================================LICENSE==============================================
+'''
+MIT License
+
+Copyright (c) 2019 Manas Hejmadi
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+THIS CODE IS WRITTEN BY MANAS M HEJMADI
+'''
+#==========================================================LICENSE================================================
 from flask import render_template, url_for, flash, redirect, request, send_file
 from Dendrite import app, db, bcrypt
 from Dendrite.forms import RegistrationForm, LoginForm, CreateTender, CreateAsset
@@ -54,9 +81,7 @@ def create_genesis_asset(name, quantity, properties, contracts):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-@app.route("/")
-def homepage():
-	return render_template('home.html', name='home', title='Dendrite - Home')
+# =================================================CORE PAGE ROUTES===============================================
 
 @app.route("/login", methods=['GET', 'POST'])
 def loginpage():	
@@ -104,41 +129,67 @@ def logout():
 	logout_user()
 	return redirect(url_for('homepage'))
 
-@app.route("/checkorigin")
-def checkorigin():
-	return render_template("checkorigin.html", name='co', title="Check Origin")
+# =================================================CORE PAGE ROUTES===============================================
 
-@app.route("/vendor")
-@login_required
-def vendorpage():
-	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
-	return render_template("vendordashboard.html", name='vendor', title="Vendor Dashboard", contracts=contracts)
+# ===================================================OTHER ROUTES==================================================
 
-@app.route("/retailer")
-@login_required
-def retailerpage():
-	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
-	return render_template("retailerdashboard.html", name='retailer', title="Retailer Dashboard", contracts=contracts)
+# Home page
+@app.route("/")
+def homepage():
+	return render_template('home.html', name='home', title='Dendrite - Home')
 
-@app.route("/manufacturer")
-@login_required
-def manufacturerpage():
-	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
-	return render_template("manufacturerdashboard.html", name='manufacturer', title="Manufacturer Dashboard", contracts=contracts)
-
-
+# Company Dashboard
 @app.route("/tenders")
 @login_required
 def vendor_address():
 	contracts = Contract.query.all()
 	return render_template("companytender.html", name='company', title="Company Tender Management", contracts=contracts)
 
+# Vendor Dashboard
+@app.route("/vendor")
+@login_required
+def vendorpage():
+	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
+	return render_template("vendordashboard.html", name='vendor', title="Vendor Dashboard", contracts=contracts)
+
+# Manufacturer Dashboard
+@app.route("/manufacturer")
+@login_required
+def manufacturerpage():
+	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
+	return render_template("manufacturerdashboard.html", name='manufacturer', title="Manufacturer Dashboard", contracts=contracts)
+
+# Logistics Dashboard
 @app.route("/logistics")
 @login_required
 def logisticspage():
 	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
 	return render_template("logisticsdashboard.html", name='logistics', title="Logistics Dashboard", contracts=contracts)
 
+# Retailer Dashboard
+@app.route("/retailer")
+@login_required
+def retailerpage():
+	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
+	return render_template("retailerdashboard.html", name='retailer', title="Retailer Dashboard", contracts=contracts)
+
+# Customer Check Origin Page
+@app.route("/checkorigin")
+def checkorigin():
+	return render_template("checkorigin.html", name='co', title="Check Origin")
+
+# ===================================================OTHER ROUTES==================================================
+
+# -------------------------------------------------FUNCTION BASED PAGES-----------------------------------------
+
+@app.route("/createcontract", methods=['GET', 'POST'])
+@login_required
+def create_contract():
+	form = CreateTender()
+	if form.validate_on_submit():
+		# Uploading the Contract
+		create_tender(form)
+	return render_template("createtender.html", name='cc', title="Create Contract", form=form)
 
 @app.route("/manufacturer/createasset", methods=['GET', 'POST'])
 @login_required
@@ -166,18 +217,6 @@ def createasset():
 		create_genesis_asset(asset_name, quantity, properties, ctr_fnames)
 		return redirect(url_for('manufacturerpage'))
 	return render_template("createassetpage.html", name='ca', title="Create Asset", p=properties, form=form)
-
-# -------------------------------------------------FUNCTION BASED PAGES-----------------------------------------
-
-@app.route("/createcontract", methods=['GET', 'POST'])
-@login_required
-def create_contract():
-	form = CreateTender()
-	if form.validate_on_submit():
-		# Uploading the Contract
-		create_tender(form)
-	return render_template("createtender.html", name='cc', title="Create Contract", form=form)
-	
 # -------------------------------------------------FUNCTION BASED PAGES-----------------------------------------
 
 # -------------------------------------------CONTRACT DESCRIPTION CODE-----------------------------------------
