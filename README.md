@@ -14,4 +14,5 @@ Known problems we wish to solve:
 * Quality : Passing quality control and safety tests, startups are also required to prepare compliance documents such as permits, licenses, and certification which can overwhelm them and their supply chain management systems. Dendrite solves this by the blockchain approach,it uses behind the scenes, to maintian genuinity and proper legal documents.
 
 This Project is currently in Version 1.0 and will omit crucial features. Important Features will be added once the current version is cited as stable
+
 Developers: Manas M Hejmadi, Yajat V Vishwakk, Rohan Kumar MV
