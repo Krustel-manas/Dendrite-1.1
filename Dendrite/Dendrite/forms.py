@@ -8,7 +8,7 @@ from Dendrite.models import User
 class RegistrationForm(FlaskForm):
     role = SelectField(
         'Role:',
-        choices=[('v', 'Vendor'), ('m', 'Manufacturer'), ('r', 'Retailer'), ('l', 'Logistics'), ('c', 'Company')]
+        choices=[('c', 'Company'), ('v', 'Vendor'), ('m', 'Manufacturer'), ('r', 'Retailer'), ('l', 'Logistics')]
     )
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=2, max=20)])

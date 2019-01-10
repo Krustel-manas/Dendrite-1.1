@@ -51,6 +51,7 @@ def create_genesis_asset(name, quantity, properties, contracts):
 		flash(f"Successfully Deployed Asset '{name}'", "success")
 	else:
 		flash(f"Error occured while trying to Deploy Asset '{name}'", 'danger')
+
 # --------------------------------------------------------------------------------------------------------------------
 
 @app.route("/")
@@ -73,6 +74,10 @@ def loginpage():
 				return redirect(url_for('vendor_address'))
 			elif role == "Manufacturer":
 				return redirect(url_for('manufacturerpage'))
+			elif role == "Logistics":
+				return redirect(url_for('logisticspage'))
+			elif role == "Retailer":
+				return redirect(url_for('retailerpage'))
 			else:
 				return redirect(url_for('homepage'))
 		else:
@@ -103,11 +108,36 @@ def logout():
 def checkorigin():
 	return render_template("checkorigin.html", name='co', title="Check Origin")
 
-@app.route("/vendors")
+@app.route("/vendor")
 @login_required
 def vendorpage():
 	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
 	return render_template("vendordashboard.html", name='vendor', title="Vendor Dashboard", contracts=contracts)
+
+@app.route("/retailer")
+@login_required
+def retailerpage():
+	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
+	return render_template("retailerdashboard.html", name='retailer', title="Retailer Dashboard", contracts=contracts)
+
+@app.route("/manufacturer")
+@login_required
+def manufacturerpage():
+	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
+	return render_template("manufacturerdashboard.html", name='manufacturer', title="Manufacturer Dashboard", contracts=contracts)
+
+
+@app.route("/tenders")
+@login_required
+def vendor_address():
+	contracts = Contract.query.all()
+	return render_template("companytender.html", name='company', title="Company Tender Management", contracts=contracts)
+
+@app.route("/logistics")
+@login_required
+def logisticspage():
+	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
+	return render_template("logisticsdashboard.html", name='logistics', title="Logistics Dashboard", contracts=contracts)
 
 
 @app.route("/manufacturer/createasset", methods=['GET', 'POST'])
@@ -136,21 +166,6 @@ def createasset():
 		create_genesis_asset(asset_name, quantity, properties, ctr_fnames)
 		return redirect(url_for('manufacturerpage'))
 	return render_template("createassetpage.html", name='ca', title="Create Asset", p=properties, form=form)
-
-@app.route("/manufacturer")
-@login_required
-def manufacturerpage():
-	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
-	return render_template("manufacturerdashboard.html", name='manufacturer', title="Manufacturer Dashboard", contracts=contracts)
-
-
-@app.route("/tenders")
-@login_required
-def vendor_address():
-	# Checking Global value
-	contracts = Contract.query.all()
-	return render_template("companytender.html", name='company', title="Company Tender Management", contracts=contracts)
-
 
 # -------------------------------------------------FUNCTION BASED PAGES-----------------------------------------
 
@@ -196,6 +211,22 @@ def manufacturerdesc(c_id):
 	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
 	c = Contract.query.filter_by(contract_id=c_id).first()
 	return render_template("manufacturerdashboard.html", name='manufacturer', title="Manufacturer Dashboard", contracts=contracts, cdesc=c)
+
+# This is used to Display Each Individual Contract on the Description Panel for the Retailers page
+@app.route("/retailer/<c_id>")
+@login_required
+def retailerdesc(c_id):
+	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
+	c = Contract.query.filter_by(contract_id=c_id).first()
+	return render_template("retailerdashboard.html", name='retailer', title="Retailer Dashboard", contracts=contracts, cdesc=c)
+
+# This is used to Display Each Individual Contract on the Description Panel for the Retailers page
+@app.route("/logistics/<c_id>")
+@login_required
+def logisticsdesc(c_id):
+	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
+	c = Contract.query.filter_by(contract_id=c_id).first()
+	return render_template("logisticsdashboard.html", name='logistics', title="Logistics Dashboard", contracts=contracts, cdesc=c)
 
 # -------------------------------------------CONTRACT DESCRIPTION CODE-----------------------------------------
 
@@ -256,4 +287,20 @@ def contractfunctions(c_id, func):
 	c = Contract.query.filter_by(contract_id=c_id).first()
 	return render_template("companytender.html", name='company', title="Company Tender Management", cdesc=c, contracts=contracts)
 
+@app.route("/deletecontract/<c_id>")
+@login_required
+def deletecontract(c_id):
+	contract = Contract.query.filter_by(contract_id=c_id).first()
+	print(contract)
+	db.session.delete(contract)
+	db.session.commit()
+	if current_user.role == "Vendor":
+		return redirect(url_for('vendorpage'))
+	elif current_user.role == "Manufacturer":
+		return redirect(url_for('manufacturerpage'))
+	elif current_user.role == "Retailer":
+		return redirect(url_for('retailerpage'))
+	elif current_user.role == "Logistics":
+		return redirect(url_for('logisticspage'))
+	
 #---------------------------------------------CONTRACT LEVEL FUNCTIONS-----------------------------------------

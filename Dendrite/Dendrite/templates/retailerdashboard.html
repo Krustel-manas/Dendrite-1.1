@@ -1,15 +1,15 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="main">
-    {% if current_user.role == "Manufacturer" %}
-    <center><h1>Manufacturer Dashboard</h1></center>
+    {% if current_user.role == "Retailer" %}
+    <center><h1>Retailer Dashboard</h1></center>
     <br>
     <div class="ctable table-responsive ">
         <table class="table">
         <thead class="thead-dark">
             <tr>
                 <th scope="col">Contract ID</th>
-                <th scope="col">Vendor Name</th>
+                <th scope="col">Name</th>
                 <th scope="col">Status</th>
             </tr>
         </thead>
@@ -17,25 +17,25 @@
             {% for contract in contracts %}
                 {% if contract.status == "Acknowledged" %}
                     <tr class="table-warning">
-                        <th scope="row"><a href="{{url_for('manufacturerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
+                        <th scope="row"><a href="{{url_for('retailerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
                         <td>{{contract.username}}</td>
                         <td>{{contract.status}}</td>
                     </tr>
                 {% elif contract.status == "Approved"%}
                     <tr class="table-success">
-                        <th scope="row"><a href="{{url_for('manufacturerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
+                        <th scope="row"><a href="{{url_for('retailerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
                         <td>{{contract.username}}</td>
                         <td>{{contract.status}}</td>
                     </tr>
                 {% elif contract.status == "Rejected"%}
                     <tr class="table-danger">
-                        <th scope="row"><a href="{{url_for('manufacturerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
+                        <th scope="row"><a href="{{url_for('retailerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
                         <td>{{contract.username}}</td>
                         <td>{{contract.status}}</td>
                     </tr>
                 {% else %}
                     <tr>
-                        <th scope="row"><a href="{{url_for('manufacturerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
+                        <th scope="row"><a href="{{url_for('retailerdesc', c_id=contract.contract_id)}}">{{contract.contract_id}}</a></th>
                         <td>{{contract.username}}</td>
                         <td>{{contract.status}}</td>
                     </tr>
@@ -69,9 +69,8 @@
             </div>
         {% endif %}
     </div>
-    <div class="clear"></div>
     {% else %}
-        <h1>This Page is accessible only to a Manufacturer</h1>
+    <h1>This Page is accessible only by a Retailer</h1>
     {% endif %}
 </div>
 {% endblock content %}

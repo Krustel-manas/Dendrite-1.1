@@ -51,19 +51,23 @@
         <h5>Vendor Name: <span class="text-muted">{{cdesc.username}}</span></h5>
         <h5>Date Of Issue: <span class="text-muted">{{cdesc.contract_date}}</span></h5>
         <h5>Vendor Address: <span class="text-muted">{{cdesc.contract_address}}</span></h5>
-        <a href="{{url_for('get_contract', fn=cdesc.contract_file)}}">Click to View the Tender Document</a
-    {% else %}
+        <a href="{{url_for('get_contract', fn=cdesc.contract_file)}}">Click to View the Tender Document</a>
+        <br><br><br>
+        <div class="btngroup">
+            <input type="button" value="Delete Tender" class="btn btn-danger btn-block" onclick="window.location.href = '{{url_for('deletecontract', c_id=cdesc.contract_id)}}';">
+        </div>
+        {% else %}
         <h1 id="cname">CT-0000</h1><br>
         <h5>Role: <span class="text-muted">None</span></h5>
         <h5>Vendor Name: <span class="text-muted">None</span></h5>
         <h5>Date Of Issue: <span class="text-muted">None</span></h5>
         <h5>Vendor Address: <span class="text-muted">None</span></h5>
         <a href="#">No Tender Document Available</a>
+        <br><br><br>
+        <div class="btngroup">
+            <input type="button" value="Delete Tender" class="btn btn-danger btn-block disabled">
+        </div>
     {% endif %}
-    <br><br><br>
-    <div class="btngroup">
-    <input type="button" value="Delete Tender" class="btn btn-danger btn-block">
-    </div>
 </div>
 <div class="clear"></div>
 {% else %}
