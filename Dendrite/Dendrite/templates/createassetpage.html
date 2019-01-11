@@ -4,21 +4,26 @@
     {% if current_user.role == "Manufacturer" %}
     <center><h1>Create Asset</h1></center>
     <div class="page">
+        <input type="button" value="Clear Properties" class="btn btn-danger ml-3" onclick="window.location.href = '{{url_for('delete_all_properties')}}';">
         <div class="part">
-            <br><br>
+            <br>
             <div class="propertylist">
-                <div class="list-group">
-                    {% for property in p %}
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1 text-primary">{{property.key}}</h5>
-                                <small>Asset Property</small>
-                            </div>
-                            <p class="mb-1">{{property.value}}</p>
-                            <small>Commissioned by {{current_user.username}}</small>
-                        </a>
-                    {% endfor %}
-                </div>
+            {% if p %}
+                    <div class="list-group">
+                        {% for property in p %}
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1 text-primary">{{property.key}}</h5>
+                                    <small>Asset Property</small>
+                                </div>
+                                <p class="mb-1">{{property.value}}</p>
+                                <small>Commissioned by {{current_user.username}}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+            {% else %}
+            <h1>Add Properties</h1>
+            {% endif %}
             </div>
         </div>
 

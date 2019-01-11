@@ -28,7 +28,7 @@ THIS CODE IS WRITTEN BY MANAS M HEJMADI
 
 from flask import render_template, url_for, flash, redirect, request, send_file
 from Dendrite import app, db, bcrypt
-from Dendrite.forms import RegistrationForm, LoginForm, CreateTender, CreateAsset
+from Dendrite.forms import (RegistrationForm, LoginForm, CreateTender, CreateAsset)
 from Dendrite.models import User, Contract
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
@@ -226,6 +226,13 @@ def createasset():
 		create_genesis_asset(asset_name, quantity, properties, ctr_fnames)
 		return redirect(url_for('manufacturerpage'))
 	return render_template("createassetpage.html", name='ca', title="Create Asset", p=properties, form=form)
+
+@app.route("/deleteproperties", methods=['GET', 'POST'])
+@login_required
+def delete_all_properties():
+	global properties
+	properties = []
+	return redirect(url_for('createasset'))
 # -------------------------------------------------FUNCTION BASED PAGES-----------------------------------------
 
 # -------------------------------------------CONTRACT DESCRIPTION CODE-----------------------------------------

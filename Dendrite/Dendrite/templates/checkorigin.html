@@ -1,30 +1,34 @@
 {% extends 'layout.html' %}
 {% block content %}
 <main>
-   <div class="cd-fixed-bg cd-fixed-bg--1">
-        <div class="stickypage">
-            <h1>Check Product Origin</h1>
-            <br><br>
-            <form action="" method="post" class="frm">
-                <label for="">Enter your Name:</label>
-                <input type="text" class="form-control" placeholder="Personal Name">
-                <br>
-                <label for="">Enter Product Name:</label>
-                <input type="text" class="form-control" placeholder="Product Name">
-                <br>
-                <label for="">Enter the Dendrite ID given on the product:</label>
-                <input type="text" class="form-control" placeholder="Dendrite ID">
-                <br>
-                <label for="">Enter Company Name:</label>
-                <input type="text" class="form-control" placeholder="Company Name">
-                <br>
-                <label for="">Enter Company Public Key:</label>
-                <textarea name="pk" id="pk" cols="20" rows="2" placeholder="Company Public Key" class="form-control"> </textarea>
-                <br>
-                <br>
-                <input type="submit" value="Check Product Origin" class="btn btn-success btn-block">
-            </form>
-        </div>
-   </div> 
+    {% if not current_user.is_authenticated %}
+        <div class="cd-fixed-bg cd-fixed-bg--1">
+            <div class="stickypage">
+                <h1>Check Product Origin</h1>
+                <br><br>
+                <form action="" method="post" class="frm">
+                    <label for="">Enter your Name:</label>
+                    <input type="text" class="form-control" placeholder="Personal Name">
+                    <br>
+                    <label for="">Enter Product Name:</label>
+                    <input type="text" class="form-control" placeholder="Product Name">
+                    <br>
+                    <label for="">Enter the Dendrite ID given on the product:</label>
+                    <input type="text" class="form-control" placeholder="Dendrite ID">
+                    <br>
+                    <label for="">Enter Company Name:</label>
+                    <input type="text" class="form-control" placeholder="Company Name">
+                    <br>
+                    <label for="">Enter Company Public Key:</label>
+                    <textarea name="pk" id="pk" cols="20" rows="2" placeholder="Company Public Key" class="form-control"> </textarea>
+                    <br>
+                    <br>
+                    <input type="submit" value="Check Product Origin" class="btn btn-success btn-block">
+                </form>
+            </div>
+    </div>
+    {% else %}
+        <h1>This Page cannot be viewed by anyone in the Supply Chain. Its only for Consumers</h1>
+    {% endif %} 
 </main>
 {% endblock content %}

@@ -4,7 +4,7 @@ from flask_login import current_user
 import pprint
 import datetime
 
-BIGCHAIN_IP = 'http://34.73.171.107'
+BIGCHAIN_IP = 'http://127.0.0.1'
 bdb = BigchainDB(f'{BIGCHAIN_IP}:9984/')
 
 
@@ -18,8 +18,9 @@ def CreateAndUploadGenesisBlock(asset, name, quantity, contracts):
     }
     data['contracts'] = contracts
     pprint.pprint(data, compact=True)
-    for _ in range(int(quantity)):
-        user = generate_keypair()
+    user = generate_keypair()
+    for i in range(int(quantity)):
+        data['AssetProductID'] = f'{sender}://{name}:{i}'
         bdb.transactions.send_commit(
             bdb.transactions.fulfill(
                 bdb.transactions.prepare(
@@ -52,4 +53,6 @@ def CreateAndUploadGenesisBlock(asset, name, quantity, contracts):
         'sender': 'Foxconn',
         'timestamp': datetime.datetime(2019, 1, 9, 18, 43, 9, 491580)
     }
+
+    Foxconn://Tesla Model Y:1
 '''

@@ -52,7 +52,7 @@
         {% endif %}
     {% endwith %}
 
-    {% if name not in ('co', 'login', 'register', 'cc')%}
+    {% if name not in ('co', 'login', 'register', 'cc', 'ta')%}
         <!--Navigation Bar-->
         <div class="snav">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -71,7 +71,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{url_for('createasset')}}">Create Asset</a>
-                        <a class="dropdown-item" href="#">Transfer Asset</a>
+                        <a class="dropdown-item" href="{{url_for('transferassetpage')}}">Transfer Asset</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{url_for('create_contract')}}">Create Contract</a>
                     </div>
