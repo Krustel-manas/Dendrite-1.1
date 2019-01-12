@@ -97,13 +97,13 @@ def create_genesis_asset(name, quantity, properties, contracts):
 		flash(f"Error occured while trying to Deploy Asset '{name}'", 'danger')
 		print(f"====EXCEPTION====: {GenesisTransaction['Exception']}")
 
-def transfertransaction():
+def transfertransaction(transfer_param):
 	# Taking Global Variables
 	global prev_block, prev_output
-	if(current_user.role == "Manufacturer"):
+	if(transfer_param == "Logistics"):
 		# Defining Owner and Recipient
-		owner = current_user.keypair
-		recipient = User.query.filter_by(role="Logistics", is_valid=True).first().keypair
+		owner = User.query.filter_by(role="Manufacturer").first().keypair
+		recipient = User.query.filter_by(role="Logistics").first().keypair
 		# Uploading Transfer Data to the Class
 		bigchain.UploadTransferData(prev_block, prev_output, owner, recipient)
 		# Sending Transaction
@@ -112,10 +112,10 @@ def transfertransaction():
 			flash(f"Successfully Transferred Asset from Manufacturer to Logistics.", "success")
 			prev_block = Transfer['block']
 			prev_output = Transfer['output']
-	elif(current_user.role == "Logistics"):
+	elif(transfer_param == "Retailer"):
 		# Defining Owner and Recipient
-		owner = current_user.keypair
-		recipient = User.query.filter_by(role="Retailer", is_valid=True).first().keypair
+		owner = User.query.filter_by(role="Logistics").first().keypair
+		recipient = User.query.filter_by(role="Retailer").first().keypair
 		# Uploading Transfer Data to the Class
 		bigchain.UploadTransferData(prev_block, prev_output, owner, recipient)
 		# Sending Transaction
@@ -326,12 +326,14 @@ def validate_transfer_request():
 		x = TransferRecord.query.filter_by(to_user=logistics).first()
 		x.is_valid = True
 		db.session.commit()
+		transfertransaction("Logistics")
 		return redirect(url_for('logisticspage'))
 	elif(current_user.role == "Retailer"):
 		retailer = Contract.query.filter_by(role="Retailer").first().username
 		x = TransferRecord.query.filter_by(to_user=retailer).first()
 		x.is_valid = True
 		db.session.commit()
+		transfertransaction("Retailer")
 		return redirect(url_for('retailerpage'))
 	else:
 		return redirect(url_for('homepage'))
