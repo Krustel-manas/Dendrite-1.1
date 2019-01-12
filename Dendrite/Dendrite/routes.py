@@ -33,10 +33,12 @@ from Dendrite.models import User, Contract
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
 import os
-from Dendrite.bigchainuploader import CreateAndUploadGenesisBlock
+from Dendrite.bigchainuploader import BigChainUploader
 import datetime
 
 #GLOBAL STATE VARIABLES
+# Define Global BigchainDB instance
+bigchain = BigChainUploader()
 filter_on = False
 filter_ops = None
 properties = []
@@ -74,15 +76,21 @@ def create_tender(form):
 
 def create_genesis_asset(name, quantity, properties, contracts):
 	asset = {}
+	#Fill Asset Properties
 	for p in properties:
 		asset[(p.get('key')).replace(' ', '_')] = p.get('value')
-	if CreateAndUploadGenesisBlock(asset, name, quantity, contracts):
+
+	#Upload Data to BigChain
+	bigchain.UploadData(asset, name, contracts, quantity)
+	#Create Genesis Block
+	GenesisTransaction = bigchain.CreateGenesisBlock()
+	#Check Status
+	if(GenesisTransaction['Success']):
 		flash(f"Successfully Deployed Asset '{name}'", "success")
+		print(f"BLOCK ID: {GenesisTransaction['block_id']}")
 	else:
 		flash(f"Error occured while trying to Deploy Asset '{name}'", 'danger')
-
-def send_reminder(filename):
-	...
+		print(f"====EXCEPTION====: {GenesisTransaction['Exception']}")
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -199,7 +207,9 @@ def checkorigin():
 def transferassetpage():
 	form = TransferAsset()
 	if form.validate_on_submit():
-		pass
+		department = form.asset_name.data
+		details = form.metadata.data
+		bigchain.stage_metadata(details, department)
 	return render_template("transferasset.html", name='ta', title="Transfer Asset", form=form)
 
 # ===================================================OTHER ROUTES==================================================

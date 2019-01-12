@@ -43,7 +43,7 @@ class CreateTender(FlaskForm):
 
 class CreateAsset(FlaskForm):
     asset_name = StringField('AssetName', validators=[DataRequired()])
-    quantity = DecimalField('Quantity', validators=[DataRequired()])
+    quantity = StringField('Quantity', validators=[DataRequired()])
     submit = SubmitField('Create Asset')
 
 class TransferAsset(FlaskForm):

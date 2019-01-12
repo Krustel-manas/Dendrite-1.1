@@ -4,20 +4,20 @@
 {% if current_user.role in ("Manufacturer", "Logistics", "Retailer") %}
     <div class="cd-fixed-bg cd-fixed-bg--1">
         <div class="stickypage">
-           <h1 class="display-4">Transfer Asset</h1><hr>
+           <h1 class="display-4">Add Production Details</h1><hr>
             <br>
             <form action="" method="post" class="frm">
                 {{ form.hidden_tag()}} 
-                <label for="">Enter the Asset name:</label>
+                <label for="">Enter the Department name:</label>
                 {% if form.asset_name.errors %}
-                    {{ form.asset_name(class="form-control is-invalid", placeholder="Enter Asset Name") }}
+                    {{ form.asset_name(class="form-control is-invalid", placeholder="Enter Department Name") }}
                     <div class="invalid-feedback">
                         {% for error in form.asset_name.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.asset_name(class="form-control", placeholder="Enter Asset Name") }}
+                    {{ form.asset_name(class="form-control", placeholder="Enter Department Name") }}
                 {% endif %}
                 <br>
                 <label for="">Enter the Metadata</label>
