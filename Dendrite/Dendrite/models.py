@@ -1,5 +1,5 @@
 from datetime import datetime
-from Dendrite import db, login_manager
+from Dendrite import db, login_manager, generate_keypair
 from flask_login import UserMixin
 
 @login_manager.user_loader
@@ -13,6 +13,7 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     tender_request = db.Column(db.String(60))
+    keypair = db.Column(db.PickleType, nullable=False, default=generate_keypair)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.role}', '{self.image_file}')"

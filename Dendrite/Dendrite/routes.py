@@ -27,7 +27,7 @@ THIS CODE IS WRITTEN BY MANAS M HEJMADI
 #==========================================================LICENSE================================================
 
 from flask import render_template, url_for, flash, redirect, request, send_file
-from Dendrite import app, db, bcrypt
+from Dendrite import app, db, bcrypt, generate_keypair
 from Dendrite.forms import (RegistrationForm, LoginForm, CreateTender, CreateAsset, TransferAsset, RaiseTender)
 from Dendrite.models import User, Contract
 from flask_login import login_user, logout_user, current_user, login_required
@@ -129,7 +129,7 @@ def registerpage():
 	form = RegistrationForm()
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		user = User(username=form.username.data, role=(dict(form.role.choices).get(form.role.data)), password=hashed_password)
+		user = User(username=form.username.data, role=(dict(form.role.choices).get(form.role.data)), password=hashed_password, keypair=generate_keypair())
 		db.session.add(user)
 		db.session.commit()
 		flash(f"Account '{form.username.data}' created successfully!", 'success')
@@ -163,7 +163,6 @@ def vendor_address():
 		form.file.data.save(os.path.join(app.root_path, 'static/Contracts/CompanyContracts', filename))
 		current_user.tender_request = filename
 		db.session.commit()
-		send_reminder(filename)
 		flash('Successfully Raised Tender', 'success')
 		return redirect(url_for('vendor_address'))
 	return render_template("companytender.html", name='company', title="Company Tender Management", contracts=contracts, form=form)
@@ -305,7 +304,8 @@ def contractdesc(c_id):
 	else:
 		contracts = Contract.query.all()
 	c = Contract.query.filter_by(contract_id=c_id).first()
-	return render_template("companytender.html", name='company', title="Company Tender Management", cdesc=c, contracts=contracts)
+	form = RaiseTender()
+	return render_template("companytender.html", name='company', title="Company Tender Management", cdesc=c, contracts=contracts, form=form)
 
 # This is used to Display Each Individual Contract on the Description Panel for the Manufacturers page
 @app.route("/manufacturer/<c_id>")
@@ -355,7 +355,8 @@ def filtervendor(filter):
 	filter_on = True
 	filter_ops = filter
 	contracts = Contract.query.filter_by(role=filter).all()
-	return render_template("companytender.html", name='company', title="Company Tender Management", contracts=contracts)
+	form = RaiseTender()
+	return render_template("companytender.html", name='company', title="Company Tender Management", contracts=contracts, form=form)
 
 # This is used to clear the filtered content
 @app.route("/tenders/deletefilterquery")

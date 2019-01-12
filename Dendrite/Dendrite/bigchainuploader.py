@@ -1,16 +1,13 @@
-from bigchaindb_driver import BigchainDB
-from bigchaindb_driver.crypto import generate_keypair
 from flask_login import current_user
 import pprint
 import datetime
 import string
 import random
-
-BIGCHAIN_IP = 'http://127.0.0.1'
+from Dendrite import generate_keypair, bdb
 
 class BigChainUploader:
     def __init__(self):
-        self.bigchaindb = BigchainDB(f'{BIGCHAIN_IP}:9984/')
+        self.bigchaindb = bdb
         self.keypairs = generate_keypair()
         self.metadata = []
         self.fulfilled_block_id = None
@@ -75,11 +72,9 @@ class BigChainUploader:
 
     def get_metadata(self):
         meta = self.metadata
-        print(f"METADATA LIST: {self.metadata}")
         metadata = {}
         for data in meta:
             metadata[data['DEPARTMENT']] = [data['METADATA'], data['TIMESTAMP']]
-        print(f"X: {metadata}")
         return metadata
 
     def prepare_genesis_transaction(self):
@@ -109,27 +104,3 @@ class BigChainUploader:
             return {'Success': True, 'block_id': self.fulfilled_block_id}
         except Exception as e:
             return {'Success': False, 'Exception': e}
-
-    
-
-# Sample of the Created Asset
-'''
-'data': {
-        'Properties': {
-            'Accent_Color': 'Gun Metal',
-            'Battery-Capacity': '500KWh',
-            'Body-Color': 'Space Grey',
-            'Drive-Configuration': '4 Wheel Electric Drive ',
-            'Gross-Vehicle-Weight-Rating': '2700 pounds',
-            'Model-Name': 'P500Q',
-            'Tire_Diameter': '21 Inches'
-        },
-        'contracts': ['CT0001.pdf', 'CT0002.pdf', 'CT0003.pdf', 'CT0004.pdf',
-                        'CT0005.pdf'],
-        'name': 'Tesla Model Y',
-        'sender': 'Foxconn',
-        'timestamp': datetime.datetime(2019, 1, 9, 18, 43, 9, 491580)
-    }
-
-    Foxconn://Tesla Model Y:1
-'''
