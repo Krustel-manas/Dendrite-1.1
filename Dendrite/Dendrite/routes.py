@@ -220,15 +220,17 @@ def manufacturerpage():
 @app.route("/logistics")
 @login_required
 def logisticspage():
+	transfer_rx = TransferRecord.query.filter_by(to_user=current_user.username, is_valid=False).first()
 	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
-	return render_template("logisticsdashboard.html", name='logistics', title="Logistics Dashboard", contracts=contracts)
+	return render_template("logisticsdashboard.html", name='logistics', title="Logistics Dashboard", contracts=contracts, rx=transfer_rx)
 
 # Retailer Dashboard
 @app.route("/retailer")
 @login_required
 def retailerpage():
+	transfer_rx = TransferRecord.query.filter_by(to_user=current_user.username, is_valid=False).first()
 	contracts = Contract.query.filter_by(username=current_user.username, role=current_user.role)
-	return render_template("retailerdashboard.html", name='retailer', title="Retailer Dashboard", contracts=contracts)
+	return render_template("retailerdashboard.html", name='retailer', title="Retailer Dashboard", contracts=contracts, rx=transfer_rx)
 
 # Customer Check Origin Page
 @app.route("/checkorigin", methods=['GET', 'POST'])
@@ -320,13 +322,17 @@ def delete_all_properties():
 @login_required
 def validate_transfer_request():
 	if(current_user.role == "Logistics"):
-		x = TransferRecord.query.filter_by(to_user="Logistics").first()
+		logistics = Contract.query.filter_by(role="Logistics").first().username
+		x = TransferRecord.query.filter_by(to_user=logistics).first()
 		x.is_valid = True
 		db.session.commit()
+		return redirect(url_for('logisticspage'))
 	elif(current_user.role == "Retailer"):
-		x = TransferRecord.query.filter_by(to_user="Retailer").first()
+		retailer = Contract.query.filter_by(role="Retailer").first().username
+		x = TransferRecord.query.filter_by(to_user=retailer).first()
 		x.is_valid = True
 		db.session.commit()
+		return redirect(url_for('retailerpage'))
 	else:
 		return redirect(url_for('homepage'))
 
