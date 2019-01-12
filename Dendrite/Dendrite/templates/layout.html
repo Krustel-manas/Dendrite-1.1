@@ -100,6 +100,9 @@
                 {% if current_user.role in ('Vendor', 'Manufacturer', 'Logistics', 'Retailer')%}
                 <input type="button" value="Create Contract" class="btn btn-primary cc" onclick="window.location.href = '{{url_for('create_contract')}}'">
                 {% endif %}
+                {% if current_user.role in ('Manufacturer', 'Logistics')%}
+                <input type="button" value="Ready For Transfer" class="btn btn-info cc" onclick="window.location.href = '{{url_for('request_transfer')}}'">
+                {% endif %}
                 </form>
             </div>
             </nav>

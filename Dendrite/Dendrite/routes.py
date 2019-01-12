@@ -115,7 +115,7 @@ def transfertransaction():
 	elif(current_user.role == "Logistics"):
 		# Defining Owner and Recipient
 		owner = current_user.keypair
-		recipient = User.query.filter_by(role="Logistics", is_valid=True).first().keypair
+		recipient = User.query.filter_by(role="Retailer", is_valid=True).first().keypair
 		# Uploading Transfer Data to the Class
 		bigchain.UploadTransferData(prev_block, prev_output, owner, recipient)
 		# Sending Transaction
@@ -315,6 +315,42 @@ def delete_all_properties():
 	global properties
 	properties = []
 	return redirect(url_for('createasset'))
+
+@app.route("/validate-transfer-request", methods=['GET', 'POST'])
+@login_required
+def validate_transfer_request():
+	if(current_user.role == "Logistics"):
+		x = TransferRecord.query.filter_by(to_user="Logistics").first()
+		x.is_valid = True
+		db.session.commit()
+	elif(current_user.role == "Retailer"):
+		x = TransferRecord.query.filter_by(to_user="Retailer").first()
+		x.is_valid = True
+		db.session.commit()
+	else:
+		return redirect(url_for('homepage'))
+
+@app.route("/request_transfer", methods=['GET', 'POST'])
+@login_required
+def request_transfer():
+	if(current_user.role == "Manufacturer"):
+		logistics = Contract.query.filter_by(role="Logistics").first().username
+		record = TransferRecord(from_user=current_user.username, to_user=logistics, 
+								timestamp=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), is_valid=False)
+		db.session.add(record)
+		db.session.commit()
+		flash('Asset Transfer will initiate after the Logistics Department acknowledges it', 'info')
+		return redirect(url_for('manufacturerpage'))
+	elif(current_user.role == "Logistics"):
+		retailer = Contract.query.filter_by(role="Retailer").first().username
+		record = TransferRecord(from_user=current_user.username, to_user=retailer, 
+								timestamp=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), is_valid=False)
+		db.session.add(record)
+		db.session.commit()
+		flash('Asset Transfer will initiate after the Retailer acknowledges it', 'info')
+		return redirect(url_for('logisticspage'))
+	return redirect(url_for('homepage'))
+	
 # -------------------------------------------------FUNCTION BASED PAGES-----------------------------------------
 
 # -------------------------------------------CONTRACT DESCRIPTION CODE-----------------------------------------
