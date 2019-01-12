@@ -29,7 +29,7 @@ THIS CODE IS WRITTEN BY MANAS M HEJMADI
 from flask import render_template, url_for, flash, redirect, request, send_file
 from Dendrite import app, db, bcrypt, generate_keypair
 from Dendrite.forms import (RegistrationForm, LoginForm, CreateTender, CreateAsset, TransferAsset, RaiseTender)
-from Dendrite.models import User, Contract
+from Dendrite.models import User, Contract, TransferRecord
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
 import os
@@ -90,11 +90,43 @@ def create_genesis_asset(name, quantity, properties, contracts):
 	#Check Status
 	if(GenesisTransaction['Success']):
 		flash(f"Successfully Deployed Asset '{name}'", "success")
-		print(f"BLOCK ID: {GenesisTransaction['block_id']}")
+		global prev_block, prev_output
+		prev_block = GenesisTransaction['block']
+		prev_output = GenesisTransaction['output']
 	else:
 		flash(f"Error occured while trying to Deploy Asset '{name}'", 'danger')
 		print(f"====EXCEPTION====: {GenesisTransaction['Exception']}")
 
+def transfertransaction():
+	# Taking Global Variables
+	global prev_block, prev_output
+	if(current_user.role == "Manufacturer"):
+		# Defining Owner and Recipient
+		owner = current_user.keypair
+		recipient = User.query.filter_by(role="Logistics", is_valid=True).first().keypair
+		# Uploading Transfer Data to the Class
+		bigchain.UploadTransferData(prev_block, prev_output, owner, recipient)
+		# Sending Transaction
+		Transfer = bigchain.TransferBlock()
+		if(Transfer['Success']):
+			flash(f"Successfully Transferred Asset from Manufacturer to Logistics.", "success")
+			prev_block = Transfer['block']
+			prev_output = Transfer['output']
+	elif(current_user.role == "Logistics"):
+		# Defining Owner and Recipient
+		owner = current_user.keypair
+		recipient = User.query.filter_by(role="Logistics", is_valid=True).first().keypair
+		# Uploading Transfer Data to the Class
+		bigchain.UploadTransferData(prev_block, prev_output, owner, recipient)
+		# Sending Transaction
+		Transfer = bigchain.TransferBlock()
+		if(Transfer['Success']):
+			flash(f"Successfully Transferred Asset from Manufacturer to Logistics.", "success")
+			prev_block = Transfer['block']
+			prev_output = Transfer['output']
+	else:
+		return redirect(url_for('homepage'))
+	
 # --------------------------------------------------------------------------------------------------------------------
 
 # =================================================CORE PAGE ROUTES===============================================
