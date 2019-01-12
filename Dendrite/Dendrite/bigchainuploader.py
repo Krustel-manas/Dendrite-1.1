@@ -8,15 +8,15 @@ from Dendrite import generate_keypair, bdb
 class BigChainUploader:
     def __init__(self):
         self.bigchaindb = bdb
-        self.keypairs = generate_keypair()
         self.metadata = []
         self.fulfilled_block_id = None
 
-    def UploadData(self, asset, asset_name, contracts, batch_n):
+    def UploadData(self, asset, asset_name, contracts, batch_n, keys=generate_keypair()):
         self.asset = asset
         self.asset_name = asset_name
         self.contract_files = contracts
         self.batch_number = batch_n
+        self.keypairs = keys
 
     @staticmethod
     def get_sender():

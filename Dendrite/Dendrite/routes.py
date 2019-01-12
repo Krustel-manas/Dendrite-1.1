@@ -84,7 +84,7 @@ def create_genesis_asset(name, quantity, properties, contracts):
 		asset[(p.get('key')).replace(' ', '_')] = p.get('value')
 
 	#Upload Data to BigChain
-	bigchain.UploadData(asset, name, contracts, quantity)
+	bigchain.UploadData(asset, name, contracts, quantity, keys=current_user.keypair)
 	#Create Genesis Block
 	GenesisTransaction = bigchain.CreateGenesisBlock()
 	#Check Status
