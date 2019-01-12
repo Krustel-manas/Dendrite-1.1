@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField, DecimalField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_wtf.file import FileField
 from Dendrite.models import User
@@ -43,5 +43,16 @@ class CreateTender(FlaskForm):
 
 class CreateAsset(FlaskForm):
     asset_name = StringField('AssetName', validators=[DataRequired()])
-    quantity = StringField('Quantity', validators=[DataRequired()])
+    quantity = DecimalField('Quantity', validators=[DataRequired()])
     submit = SubmitField('Create Asset')
+
+class TransferAsset(FlaskForm):
+    asset_name = StringField('AssetName', validators=[DataRequired()])
+    metadata = TextAreaField('Meta', validators=[DataRequired()])
+    submit = SubmitField('Create Asset')
+
+class RaiseTender(FlaskForm):
+    doi = StringField('DatePicker')
+    company_address = StringField('CompanyAddress', validators=[DataRequired()])
+    file = FileField()
+    submit = SubmitField('Raise Tender')

@@ -28,7 +28,7 @@ THIS CODE IS WRITTEN BY MANAS M HEJMADI
 
 from flask import render_template, url_for, flash, redirect, request, send_file
 from Dendrite import app, db, bcrypt
-from Dendrite.forms import (RegistrationForm, LoginForm, CreateTender, CreateAsset)
+from Dendrite.forms import (RegistrationForm, LoginForm, CreateTender, CreateAsset, TransferAsset, RaiseTender)
 from Dendrite.models import User, Contract
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
@@ -80,6 +80,9 @@ def create_genesis_asset(name, quantity, properties, contracts):
 		flash(f"Successfully Deployed Asset '{name}'", "success")
 	else:
 		flash(f"Error occured while trying to Deploy Asset '{name}'", 'danger')
+
+def send_reminder(filename):
+	...
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -141,11 +144,21 @@ def homepage():
 	return render_template('home.html', name='home', title='Dendrite - Home')
 
 # Company Dashboard
-@app.route("/tenders")
+@app.route("/tenders", methods=['GET', 'POST'])
 @login_required
 def vendor_address():
 	contracts = Contract.query.all()
-	return render_template("companytender.html", name='company', title="Company Tender Management", contracts=contracts)
+	form = RaiseTender()
+	form.doi.data = datetime.datetime.now().strftime('%d-%m-%Y')
+	if form.validate_on_submit():
+		filename = secure_filename(form.file.data.filename)
+		form.file.data.save(os.path.join(app.root_path, 'static/Contracts/CompanyContracts', filename))
+		current_user.tender_request = filename
+		db.session.commit()
+		send_reminder(filename)
+		flash('Successfully Raised Tender', 'success')
+		return redirect(url_for('vendor_address'))
+	return render_template("companytender.html", name='company', title="Company Tender Management", contracts=contracts, form=form)
 
 # Vendor Dashboard
 @app.route("/vendor")
@@ -184,7 +197,10 @@ def checkorigin():
 @app.route("/transferasset", methods=['GET', 'POST'])
 @login_required
 def transferassetpage():
-	return render_template("transferasset.html", name='ta', title="Transfer Asset")
+	form = TransferAsset()
+	if form.validate_on_submit():
+		pass
+	return render_template("transferasset.html", name='ta', title="Transfer Asset", form=form)
 
 # ===================================================OTHER ROUTES==================================================
 
@@ -199,6 +215,28 @@ def create_contract():
 		# Uploading the Contract
 		create_tender(form)
 	return render_template("createtender.html", name='cc', title="Create Contract", form=form)
+
+# Manufacturer Dashboard
+@app.route("/checkrequests")
+@login_required
+def check_requests():
+	role = current_user.role
+	c = User.query.filter_by(role="Company").first()
+	fn = c.tender_request
+	if fn:
+		file = os.path.join(app.root_path, 'static/Contracts/CompanyContracts', fn)
+		return send_file(file)
+	else:
+		flash('No Tenders have been raised by the Company', 'danger')
+		if role == "Vendor":
+			return redirect(url_for('vendorpage'))
+		elif role == "Manufacturer":
+			return redirect(url_for('manufacturerpage'))
+		elif role == "Logistics":
+			return redirect(url_for('logisticspage'))
+		elif role == "Retailer":
+			return redirect(url_for('retailerpage'))
+
 
 @app.route("/manufacturer/createasset", methods=['GET', 'POST'])
 @login_required

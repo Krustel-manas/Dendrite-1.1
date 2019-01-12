@@ -4,12 +4,35 @@
 {% if current_user.role in ("Manufacturer", "Logistics", "Retailer") %}
     <div class="cd-fixed-bg cd-fixed-bg--1">
         <div class="stickypage">
-            <legend>Transfer Asset Page</legend><hr>
-            <br><br>
+           <h1 class="display-4">Transfer Asset</h1><hr>
+            <br>
             <form action="" method="post" class="frm">
-                <h1 class="display-4">Asset Name</h1>
+                {{ form.hidden_tag()}} 
+                <label for="">Enter the Asset name:</label>
+                {% if form.asset_name.errors %}
+                    {{ form.asset_name(class="form-control is-invalid", placeholder="Enter Asset Name") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.asset_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.asset_name(class="form-control", placeholder="Enter Asset Name") }}
+                {% endif %}
                 <br>
-                <input type="submit" value="Transfer" class="btn btn-success btn-block">
+                <label for="">Enter the Metadata</label>
+                {% if form.metadata.errors %}
+                    {{ form.metadata(class="form-control", cols="35", rows="20") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.metadata.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.metadata(class="form-control", cols="35", rows="10") }}
+                {% endif %}
+                <br>
+                {{form.submit(class="btn btn-success btn-block")}}
             </form>
         </div>
     </div> 

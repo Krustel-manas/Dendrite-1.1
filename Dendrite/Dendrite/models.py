@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
     role = db.Column(db.String(20), nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
+    tender_request = db.Column(db.String(60))
 
     def __repr__(self):
         return f"User('{self.username}', '{self.role}', '{self.image_file}')"

@@ -2,9 +2,12 @@
 {% block content %}
 <div class="main">
 {% if current_user.role == "Company" %}
-    <center><h2>{{current_user.username}} Tender Management</h2></center><br><br>
+    <center>
+        <h2>{{current_user.username}} Tender Management</h2>
+        <input type="button" value="Raise Tender" class="btn btn-info my-2 rtb px-5" data-toggle="modal" data-target="#exampleModal">
+    </center><br>
     <div class="content">
-        <div class="ctable table-responsive">
+        <div class="ctable table-responsive ml-2">
             <input type="button" value="Vendor" class="btn btn-secondary fb" onclick="window.location.href = '{{url_for('filtervendor', filter='Vendor')}}';">
             <input type="button" value="Manufacturer" class="btn btn-secondary fb" onclick="window.location.href = '{{url_for('filtervendor', filter='Manufacturer')}}';">
             <input type="button" value="Logistics" class="btn btn-secondary fb" onclick="window.location.href = '{{url_for('filtervendor', filter='Logistics')}}';">
@@ -87,5 +90,52 @@
 {% else %}
     <h1>This Page is Accesible only to the Company</h1>
 {% endif %}
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Raise Tender</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="" method="post" enctype="multipart/form-data">
+      {{ form.hidden_tag()}}
+        <div class="modal-body">
+            <label for="">Date of Issue:</label>
+            {% if form.doi.errors %}
+                {{ form.doi(class="form-control is-invalid", placeholder="DD-MM-YY") }}
+                <div class="invalid-feedback">
+                    {% for error in form.doi.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.doi(class="form-control", placeholder="DD-MM-YY") }}
+            {% endif %}
+            <br>
+            <label for="">Company Address:</label>
+            {% if form.company_address.errors %}
+                {{ form.company_address(class="form-control is-invalid", placeholder="Company Website") }}
+                <div class="invalid-feedback">
+                    {% for error in form.company_address.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.company_address(class="form-control", placeholder="Company Website") }}
+            {% endif %}
+            <br>
+            <label for="">Upload Tender Documents</label>
+            {{form.file()}}
+        </div>
+        <div class="modal-footer">
+            {{form.submit(class="btn btn-success px-5")}}
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock content %}

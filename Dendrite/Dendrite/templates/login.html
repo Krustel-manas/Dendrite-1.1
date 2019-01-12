@@ -62,6 +62,16 @@
       <div class="modal-body">
         <form action="" method="post">
             {{ form.hidden_tag()}}
+            {% if form.password.errors %}
+                {{ form.password(class="form-control is-invalid", placeholder="Password") }}
+                <div class="invalid-feedback">
+                    {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.password(class="form-control", placeholder="Password") }}
+            {% endif %}
         </form>
       </div>
       <div class="modal-footer">
