@@ -53,10 +53,16 @@ def change_status(c_id, func):
 	elif func == "a":
 		x = Contract.query.filter_by(contract_id=c_id).first()
 		x.status = "Approved"
+		all_contracts = Contract.query.filter_by(role=x.role).all()
+		for y in all_contracts:
+			os.remove(os.path.join(app.root_path, 'static\\Contracts', y.contract_file))
+			db.session.delete(y)
+		db.session.add(x)
 		db.session.commit()
 	elif func == "r":
 		x = Contract.query.filter_by(contract_id=c_id).first()
-		x.status = "Rejected"
+		os.remove(os.path.join(app.root_path, 'static\\Contracts', x.contract_file))
+		db.session.delete(x)
 		db.session.commit()
 
 # Create the Actual Tender and save it in the Database
