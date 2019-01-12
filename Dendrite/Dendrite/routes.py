@@ -50,17 +50,14 @@ def change_status(c_id, func):
 		x = Contract.query.filter_by(contract_id=c_id).first()
 		x.status = "Acknowledged"
 		db.session.commit()
-		flash(f'Contract {c_id} has been Acknowledged Successfully!', 'primary')
 	elif func == "a":
 		x = Contract.query.filter_by(contract_id=c_id).first()
 		x.status = "Approved"
 		db.session.commit()
-		flash(f'Contract {c_id} has been Approved Successfully!', 'success')
 	elif func == "r":
 		x = Contract.query.filter_by(contract_id=c_id).first()
 		x.status = "Rejected"
 		db.session.commit()
-		flash(f'Contract {c_id} has been Rejected', 'danger')
 
 # Create the Actual Tender and save it in the Database
 def create_tender(form):

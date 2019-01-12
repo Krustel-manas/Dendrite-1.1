@@ -30,3 +30,13 @@ class Contract(db.Model, UserMixin):
 
     def __repr__(self):
         return f"Contract('{self.contract_id}', '{self.status}', '{self.contract_date}', '{self.contract_file}')"
+
+class TransferRecord(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    from_user = db.Column(db.String(20), nullable=False)
+    to_user = db.Column(db.String(20), nullable=False)
+    timestamp = db.Column(db.String(40), nullable=False)
+    is_valid = db.Column(db.Boolean())
+
+    def __repr__(self):
+        return f"TransferRecord('{self.from_user}', '{self.to_user}', '{self.timestamp}')"
