@@ -11,6 +11,8 @@ class BigChainUploader:
         self.metadata = []
         self.fulfilled_block_id = None
 
+    #===============================================DATA DUMP===================================================
+
     def UploadData(self, asset, asset_name, contracts, batch_n, keys=generate_keypair()):
         self.asset = asset
         self.asset_name = asset_name
@@ -18,6 +20,13 @@ class BigChainUploader:
         self.batch_number = batch_n
         self.keypairs = keys
 
+    def UploadTransferData(self, prev_fulfilled_block, prev_block_output, owner, recipient):
+        self.prev_fulfilled_block = prev_fulfilled_block
+        self.prev_block_output = prev_block_output
+        self.owner = owner
+        self.recipient = recipient
+
+    #=================================================GETTERS===================================================
     @staticmethod
     def get_sender():
         return current_user.username
@@ -39,6 +48,21 @@ class BigChainUploader:
     def UniqueID():
         return "".join([random.choice(string.digits + string.ascii_lowercase) for i in range(10)] )
 
+    def get_asset_data(self):
+        data = self.create_asset_data()
+        asset = {
+            'data': data
+        }
+        return asset
+
+    def get_metadata(self):
+        meta = self.metadata
+        metadata = {}
+        for data in meta:
+            metadata[data['DEPARTMENT']] = [data['METADATA'], data['TIMESTAMP'], data['ROLE']]
+        return metadata
+
+    #===============================================DATA CREATION===================================================
     def create_asset_data(self):
         data = {
             'name': self.get_asset_name(),
@@ -51,12 +75,15 @@ class BigChainUploader:
         }
         return data
 
-    def get_asset_data(self):
-        data = self.create_asset_data()
-        asset = {
-            'data': data
+    def stage_metadata(self, metadata, sender):
+        meta = {
+            'ROLE': current_user.role,
+            'DEPARTMENT': sender,
+            'METADATA': metadata,
+            'TIMESTAMP': self.timestamp()
         }
-        return asset
+        self.metadata.append(meta)
+
 
     def send_transaction(self, fulfilled_block):
         self.bigchaindb.transactions.send_commit(fulfilled_block)
@@ -70,43 +97,6 @@ class BigChainUploader:
         self.fulfilled_outputs = f['outputs'][0]
         return f
 
-
-    def get_metadata(self):
-        meta = self.metadata
-        metadata = {}
-        for data in meta:
-            metadata[data['DEPARTMENT']] = [data['METADATA'], data['TIMESTAMP'], data['ROLE']]
-        return metadata
-
-    def prepare_genesis_transaction(self):
-        return self.bigchaindb.transactions.prepare(
-            operation='CREATE',
-            signers=self.keypairs.public_key,
-            asset=self.get_asset_data(),
-            metadata=self.get_metadata()
-        )
-
-    def stage_metadata(self, metadata, sender):
-        meta = {
-            'ROLE': current_user.role,
-            'DEPARTMENT': sender,
-            'METADATA': metadata,
-            'TIMESTAMP': self.timestamp()
-        }
-        self.metadata.append(meta)
-
-    def CreateGenesisBlock(self):
-        try:
-            #Send Genesis Block
-            self.send_transaction(
-                self.fulill_transaction(
-                    self.prepare_genesis_transaction()
-                )
-            )
-            return {'Success': True, 'block': self.fulfilled_block, 'output':self.fulfilled_outputs}
-        except Exception as e:
-            return {'Success': False, 'Exception': e}
-
     def getTransferInput(self):
         transfer_input = {
             'fulfills': {
@@ -118,11 +108,26 @@ class BigChainUploader:
         }
         return transfer_input
 
-    def UploadTransferData(self, prev_fulfilled_block, prev_block_output, owner, recipient):
-        self.prev_fulfilled_block = prev_fulfilled_block
-        self.prev_block_output = prev_block_output
-        self.owner = owner
-        self.recipient = recipient
+    def prepare_genesis_transaction(self):
+        return self.bigchaindb.transactions.prepare(
+            operation='CREATE',
+            signers=self.keypairs.public_key,
+            asset=self.get_asset_data(),
+            metadata=self.get_metadata()
+        )
+
+    #=================================================SEND FUNCTIONS=============================================
+    def CreateGenesisBlock(self):
+        try:
+            #Send Genesis Block
+            self.send_transaction(
+                self.fulill_transaction(
+                    self.prepare_genesis_transaction()
+                )
+            )
+            return {'Success': True, 'block': self.fulfilled_block, 'output':self.fulfilled_outputs}
+        except Exception as e:
+            return {'Success': False, 'Exception': e}
 
     def TransferBlock(self):
         # Prepare
