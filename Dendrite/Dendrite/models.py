@@ -40,3 +40,17 @@ class TransferRecord(db.Model, UserMixin):
 
     def __repr__(self):
         return f"TransferRecord('{self.from_user}', '{self.to_user}', '{self.timestamp}')"
+
+class BlockRecord(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    from_user = db.Column(db.String(20), nullable=False)
+    to_user = db.Column(db.String(20), nullable=False)
+    prev_owner = db.Column(db.PickleType)
+    next_owner = db.Column(db.PickleType)
+    prev_block = db.Column(db.PickleType)
+    next_block = db.Column(db.PickleType)
+    
+    
+
+    def __repr__(self):
+        return f"TransferRecord('{self.from_user}', '{self.to_user}', '{self.timestamp}')"

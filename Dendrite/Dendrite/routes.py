@@ -29,7 +29,7 @@ THIS CODE IS WRITTEN BY MANAS M HEJMADI
 from flask import render_template, url_for, flash, redirect, request, send_file
 from Dendrite import app, db, bcrypt, generate_keypair
 from Dendrite.forms import (RegistrationForm, LoginForm, CreateTender, CreateAsset, TransferAsset, RaiseTender)
-from Dendrite.models import User, Contract, TransferRecord
+from Dendrite.models import User, Contract, TransferRecord, BlockRecord
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
 import os
@@ -89,41 +89,55 @@ def create_genesis_asset(name, quantity, properties, contracts):
 	GenesisTransaction = bigchain.CreateGenesisBlock()
 	#Check Status
 	if(GenesisTransaction['Success']):
-		flash(f"Successfully Deployed Asset '{name}'", "success")
-		global prev_block, prev_output
-		prev_block = GenesisTransaction['block']
-		prev_output = GenesisTransaction['output']
+		flash(f"Successfully Deployed Asset '{name}'", "success")	
+		block_record = BlockRecord(from_user=current_user.username, to_user=current_user.username,
+							 prev_owner=current_user.keypair, next_owner=current_user.keypair,
+							 prev_block=GenesisTransaction['block'], prev_output=GenesisTransaction['output'])
+		db.session.add(block_record)
+		db.session.commit()
 	else:
 		flash(f"Error occured while trying to Deploy Asset '{name}'", 'danger')
 		print(f"====EXCEPTION====: {GenesisTransaction['Exception']}")
 
 def transfertransaction(transfer_param):
 	# Taking Global Variables
-	global prev_block, prev_output
 	if(transfer_param == "Logistics"):
+		#Getting the block
+		manufacturer = User.query.filter_by(role="Manufacturer").first()
+		block_record = BlockRecord.query.filter_by(from_user=manufacturer.username, to_user=manufacturer.username).first()
 		# Defining Owner and Recipient
 		owner = User.query.filter_by(role="Manufacturer").first().keypair
 		recipient = User.query.filter_by(role="Logistics").first().keypair
 		# Uploading Transfer Data to the Class
-		bigchain.UploadTransferData(prev_block, prev_output, owner, recipient)
+		bigchain.UploadTransferData(block_record.prev_block, block_record.prev_output, owner, recipient)
 		# Sending Transaction
 		Transfer = bigchain.TransferBlock()
 		if(Transfer['Success']):
 			flash(f"Successfully Transferred Asset from Manufacturer to Logistics.", "success")
-			prev_block = Transfer['block']
-			prev_output = Transfer['output']
+			block_record = BlockRecord(from_user=manufacturer.username, to_user=current_user.username,
+							 prev_owner=manufacturer.keypair, next_owner=current_user.keypair,
+							 prev_block=Transfer['block'], prev_output=Transfer['output'])
+			db.session.add(block_record)
+			db.session.commit()
 	elif(transfer_param == "Retailer"):
+		#Getting the block
+		manufacturer = User.query.filter_by(role="Manufacturer").first()
+		logistics = User.query.filter_by(role="logistics").first()
+		block_record = BlockRecord.query.filter_by(from_user=manufacturer.username, to_user=logistics.username).first()
 		# Defining Owner and Recipient
 		owner = User.query.filter_by(role="Logistics").first().keypair
 		recipient = User.query.filter_by(role="Retailer").first().keypair
 		# Uploading Transfer Data to the Class
-		bigchain.UploadTransferData(prev_block, prev_output, owner, recipient)
+		bigchain.UploadTransferData(block_record.prev_block, block_record.prev_output, owner, recipient)
 		# Sending Transaction
 		Transfer = bigchain.TransferBlock()
 		if(Transfer['Success']):
-			flash(f"Successfully Transferred Asset from Manufacturer to Logistics.", "success")
-			prev_block = Transfer['block']
-			prev_output = Transfer['output']
+			flash(f"Successfully Transferred Asset from Logistics to Retailer.", "success")
+			block_record = BlockRecord(from_user=logistics.username, to_user=current_user.username,
+							 prev_owner=logistics.keypair, next_owner=current_user.keypair,
+							 prev_block=Transfer['block'], prev_output=Transfer['output'])
+			db.session.add(block_record)
+			db.session.commit()
 	else:
 		return redirect(url_for('homepage'))
 	

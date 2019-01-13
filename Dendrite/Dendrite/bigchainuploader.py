@@ -130,6 +130,7 @@ class BigChainUploader:
             return {'Success': False, 'Exception': e}
 
     def TransferBlock(self):
+        print(f"Previous Fulfilled Block ID: {self.prev_fulfilled_block['id']}")
         # Prepare
         prepared_transfer_tx = bdb.transactions.prepare(
             operation='TRANSFER',
