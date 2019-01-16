@@ -6,6 +6,7 @@ bdb = BigchainDB(bdb_root_url)  # This denotes the fact that we are not using au
 Manufacturer = generate_keypair()
 Logistics = generate_keypair()
 Retailer = generate_keypair()
+Customer = generate_keypair()
 
 
 # Generates public and private key for Manufacturer and Logistics
@@ -28,8 +29,8 @@ prepared_creation_tx = bdb.transactions.prepare(operation='CREATE', signers=Manu
                                                 metadata=metadata)  # This creates a digital asset
 fulfilled_creation_tx = bdb.transactions.fulfill(prepared_creation_tx,
                                                  private_keys=Manufacturer.private_key)
-sent_creation_tx = bdb.transactions.send_commit(
-    fulfilled_creation_tx)  # the authorized transaction is now sent over to the BigchainDB
+sent_creation_tx = bdb.transactions.send_commit(fulfilled_creation_tx)  # the authorized transaction is now sent over to the BigchainDB
+
 txid = fulfilled_creation_tx['id']  # contains the transaction id
 creation_tx = fulfilled_creation_tx  # Manufacturer retrieves the transaction
 print("Manufacturer retrieves", creation_tx)
@@ -112,3 +113,38 @@ print(fulfilled_transfer_tx_again)
 
 print("Is Retailer the owner?", sent_transfer_tx_again['outputs'][0]['public_keys'][0] == Retailer.public_key)
 print("Was Logistics the previous owner? ", fulfilled_transfer_tx_again['inputs'][0]['owners_before'][0] == Logistics.public_key)
+
+asset_id = fulfilled_transfer_tx_again['asset']['id']
+transfer_asset = {
+    'id': asset_id,
+}
+print("3rd Transfer")
+print(fulfilled_transfer_tx_again['asset']['id'])
+
+output = creation_tx['outputs'][output_index]
+transfer_input = {
+    'fulfillment': output['condition']['details'],
+    'fulfills': {
+        'output_index': output_index,
+        'transaction_id': transfer_tx['id'],
+    },
+    'owners_before': [Logistics.public_key]
+}
+
+prepared_transfer_tx_again = bdb.transactions.prepare(
+    operation='TRANSFER',
+    asset=transfer_asset,
+    inputs=transfer_input,
+    recipients=Customer.public_key,
+)
+# Fulfillment of transfer
+fulfilled_transfer_tx_again = bdb.transactions.fulfill(
+    prepared_transfer_tx_again,
+    private_keys=Retailer.private_key,
+)
+# send_commit it across the Node
+sent_transfer_tx_again = bdb.transactions.send_commit(fulfilled_transfer_tx_again)
+print("Fulfilled transfer looks like")
+print(fulfilled_transfer_tx_again)
+
+print("Is Customer the owner?", sent_transfer_tx_again['outputs'][0]['public_keys'][0] == Customer.public_key)

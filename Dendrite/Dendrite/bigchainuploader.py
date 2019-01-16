@@ -3,16 +3,14 @@ import pprint
 import datetime
 import string
 import random
-from Dendrite import generate_keypair, bdb
+from Dendrite import generate_keypair, bdb, db
+from Dendrite.models import TransferRecord
 import json
+from Dendrite.models import User
 
 class BigChainUploader:
     def __init__(self):
-        self.bigchaindb = bdb
         self.metadata = []
-        self.manufacturer = generate_keypair()
-        self.logistics = generate_keypair()
-        self.retailer = generate_keypair()
 
     def get_metadata(self):
         meta = self.metadata
@@ -31,6 +29,7 @@ class BigChainUploader:
         self.metadata.append(meta)
 
     def CreateGenesis(self, asset_name, properties, contracts, items_per_batch):
+        keypair = current_user.keypair
         asset = {
             'data' : {
                 'name': asset_name,
@@ -44,23 +43,27 @@ class BigChainUploader:
         }
         prepared_creation_tx = bdb.transactions.prepare(
             operation='CREATE',
-            signers=self.manufacturer.public_key,
+            signers=keypair.public_key,
             asset=asset,
             metadata=self.get_metadata()
         )
         fulfilled_creation_tx = bdb.transactions.fulfill(
             prepared_creation_tx,
-            private_keys=self.manufacturer.private_key
+            private_keys=keypair.private_key
         )
         sent_creation_tx = bdb.transactions.send_commit(fulfilled_creation_tx)
 
         #Saving to Dump File
         with open("blockoutputs.txt", 'w') as f:
+            f.truncate()
             f.write(json.dumps(fulfilled_creation_tx))
 
         return {'status': True}
 
     def TransferToLogistics(self):
+        #Get Keypair
+        manufacturer_keys = User.query.filter_by(username=TransferRecord.query.filter_by(to_user=current_user.username).first().from_user).first().keypair
+        logistics_keys = current_user.keypair
         #get previous block information
         with open("blockoutputs.txt", 'r') as f:
             x = f.readlines()
@@ -85,13 +88,13 @@ class BigChainUploader:
             operation='TRANSFER',
             asset=asset_to_transfer,
             inputs=transfer_input,
-            recipients=self.logistics.public_key,
+            recipients=logistics_keys.public_key,
             metadata=self.get_metadata()
         )
         # Fulfill
         fulfilled_transfer_tx = bdb.transactions.fulfill(
             prepared_transfer_tx,
-            private_keys=self.manufacturer.private_key,
+            private_keys=manufacturer_keys.private_key,
         )
         # Send
         sent_transfer_tx = bdb.transactions.send_commit(fulfilled_transfer_tx)
@@ -102,11 +105,15 @@ class BigChainUploader:
             f.write(json.dumps(fulfilled_transfer_tx))
 
         #Check if Sent
-        if(sent_transfer_tx['outputs'][0]['public_keys'][0] == self.logistics.public_key and fulfilled_transfer_tx['inputs'][0]['owners_before'][0] == self.manufacturer.public_key):
+        if(sent_transfer_tx['outputs'][0]['public_keys'][0] == logistics_keys.public_key and fulfilled_transfer_tx['inputs'][0]['owners_before'][0] == manufacturer_keys.public_key):
             return {'status': True}
 
 
     def TransferToRetailer(self):
+        #Get Keypair
+        logistics_keys = User.query.filter_by(username=TransferRecord.query.filter_by(to_user=current_user.username).first().from_user).first().keypair
+        retailer_keys = current_user.keypair
+
         #get previous block information
         with open("blockoutputs.txt", 'r') as f:
             x = f.readlines()
@@ -124,20 +131,20 @@ class BigChainUploader:
                 'output_index': 0,
                 'transaction_id': out['id'],
             },
-            'owners_before': [self.logistics.public_key],
+            'owners_before': [logistics_keys.public_key],
         }
         # Prepare
         prepared_transfer_tx = bdb.transactions.prepare(
             operation='TRANSFER',
             asset=asset_to_transfer,
             inputs=transfer_input,
-            recipients=self.retailer.public_key,
+            recipients=retailer_keys.public_key,
             metadata=self.get_metadata()
         )
         # Fulfill
         fulfilled_transfer_tx = bdb.transactions.fulfill(
             prepared_transfer_tx,
-            private_keys=self.logistics.private_key,
+            private_keys=logistics_keys.private_key,
         )
         # Send
         sent_transfer_tx = bdb.transactions.send_commit(fulfilled_transfer_tx)
@@ -146,7 +153,8 @@ class BigChainUploader:
         with open("blockoutputs.txt", "w") as f:
             f.truncate()
             f.write(json.dumps(fulfilled_transfer_tx))
-        
+
+        print(fulfilled_transfer_tx['id'])
         #Check if Sent
-        if(sent_transfer_tx['outputs'][0]['public_keys'][0] == self.retailer.public_key and fulfilled_transfer_tx['inputs'][0]['owners_before'][0] == self.logistics.public_key):
+        if(sent_transfer_tx['outputs'][0]['public_keys'][0] == retailer_keys.public_key and fulfilled_transfer_tx['inputs'][0]['owners_before'][0] == logistics_keys.public_key):
             return {'status': True}

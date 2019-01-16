@@ -99,7 +99,7 @@ def transfertransaction(transfer_param):
 	elif(transfer_param == "Retailer"):
 		Transfer = bigchain.TransferToRetailer()
 		if(Transfer['status']):
-			flash(f"Successfully Transferred Asset from Manufacturer to Logistics.", "success")
+			flash(f"Successfully Transferred Asset from Logistics to Retailer.", "success")
 	else:
 		return redirect(url_for('homepage'))
 	

@@ -1,11 +1,15 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="main">
-{% if current_user.role in ("Manufacturer", "Logistics", "Retailer") %}
+{% if current_user.role in ("Manufacturer", "Logistics") %}
     <div class="cd-fixed-bg cd-fixed-bg--1">
         <div class="stickypage">
+            {% if current_user.role == "Manufacturer" %}
+            <button class="btn mx-2" onclick="window.location.href = '{{url_for('manufacturerpage')}}';">Back</button>
+            {% elif current_user.role == "Logistics"%}
+            <button class="btn mx-2" onclick="window.location.href = '{{url_for('logisticspage')}}';">Back</button>
+            {% endif %}
            <h1 class="display-4">Add Production Details</h1><hr>
-            <br>
             <form action="" method="post" class="frm">
                 {{ form.hidden_tag()}} 
                 <label for="">Enter the Department name:</label>
@@ -22,7 +26,7 @@
                 <br>
                 <label for="">Enter the Metadata</label>
                 {% if form.metadata.errors %}
-                    {{ form.metadata(class="form-control", cols="35", rows="20") }}
+                    {{ form.metadata(class="form-control") }}
                     <div class="invalid-feedback">
                         {% for error in form.metadata.errors %}
                             <span>{{ error }}</span>
