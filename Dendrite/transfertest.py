@@ -1,13 +1,23 @@
 from bigchaindb_driver import BigchainDB  # This imports the BigchainDB which has been running on the system
 from bigchaindb_driver.crypto import generate_keypair  # This imports the generate_keypair module which is required for creating private and public kets
 
-bdb_root_url = 'http://localhost:9984'
+bdb_root_url = 'http://35.200.197.117:9984/'
 bdb = BigchainDB(bdb_root_url)  # This denotes the fact that we are not using authentication tokens
-Manufacturer = generate_keypair()
-Logistics = generate_keypair()
-Retailer = generate_keypair()
-Customer = generate_keypair()
+# Manufacturer = generate_keypair()
+# Logistics = generate_keypair()
+# Retailer = generate_keypair()
+# Customer = generate_keypair()
 
+
+Manufacturer, Logistics, Retailer = generate_keypair(), generate_keypair(), generate_keypair()
+tx = bdb.transactions.prepare(
+    operation='CREATE',
+    signers=Manufacturer.public_key,
+    asset={'data': {'message': 'ABC'}})
+signed_tx = bdb.transactions.fulfill(
+    tx,
+    private_keys=Manufacturer.private_key)
+bdb.transactions.send_commit(signed_tx)
 
 # Generates public and private key for Manufacturer and Logistics
 '''
@@ -50,6 +60,8 @@ Transfer transaction
 output_index = 0
 output = creation_tx['outputs'][output_index]
 transfer_input = {
+    'from': "FritoLayFactories",
+    'to': "DTDC",
     'fulfillment': output['condition']['details'],
     'fulfills': {
         'output_index': output_index,
@@ -87,6 +99,8 @@ print(transfer_tx['asset']['id'])
 
 output = creation_tx['outputs'][output_index]
 transfer_input = {
+    'from': "DTDC",
+    'to': "FradeepStores",
     'fulfillment': output['condition']['details'],
     'fulfills': {
         'output_index': output_index,
@@ -113,38 +127,3 @@ print(fulfilled_transfer_tx_again)
 
 print("Is Retailer the owner?", sent_transfer_tx_again['outputs'][0]['public_keys'][0] == Retailer.public_key)
 print("Was Logistics the previous owner? ", fulfilled_transfer_tx_again['inputs'][0]['owners_before'][0] == Logistics.public_key)
-
-asset_id = fulfilled_transfer_tx_again['asset']['id']
-transfer_asset = {
-    'id': asset_id,
-}
-print("3rd Transfer")
-print(fulfilled_transfer_tx_again['asset']['id'])
-
-output = creation_tx['outputs'][output_index]
-transfer_input = {
-    'fulfillment': output['condition']['details'],
-    'fulfills': {
-        'output_index': output_index,
-        'transaction_id': transfer_tx['id'],
-    },
-    'owners_before': [Logistics.public_key]
-}
-
-prepared_transfer_tx_again = bdb.transactions.prepare(
-    operation='TRANSFER',
-    asset=transfer_asset,
-    inputs=transfer_input,
-    recipients=Customer.public_key,
-)
-# Fulfillment of transfer
-fulfilled_transfer_tx_again = bdb.transactions.fulfill(
-    prepared_transfer_tx_again,
-    private_keys=Retailer.private_key,
-)
-# send_commit it across the Node
-sent_transfer_tx_again = bdb.transactions.send_commit(fulfilled_transfer_tx_again)
-print("Fulfilled transfer looks like")
-print(fulfilled_transfer_tx_again)
-
-print("Is Customer the owner?", sent_transfer_tx_again['outputs'][0]['public_keys'][0] == Customer.public_key)

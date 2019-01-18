@@ -1,11 +1,6 @@
 from flask_login import current_user
-import pprint
-import datetime
-import string
-import random
-from Dendrite import generate_keypair, bdb, db
+from Dendrite import generate_keypair, bdb, db, json, datetime, string, random
 from Dendrite.models import TransferRecord
-import json
 from Dendrite.models import User
 
 class BigChainUploader:
@@ -76,6 +71,8 @@ class BigChainUploader:
         output = out['outputs'][0]
         #Transfer Input
         transfer_input = {
+            'from': TransferRecord.query.filter_by(to_user=current_user.username).first().from_user,
+            'to': current_user.username,
             'fulfillment': output['condition']['details'],
             'fulfills': {
                 'output_index': 0,
@@ -126,6 +123,8 @@ class BigChainUploader:
         output = out['outputs'][0]
         #Transfer Input
         transfer_input = {
+            'from': TransferRecord.query.filter_by(to_user=current_user.username).first().from_user,
+            'to': current_user.username,
             'fulfillment': output['condition']['details'],
             'fulfills': {
                 'output_index': 0,

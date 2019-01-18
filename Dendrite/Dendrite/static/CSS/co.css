@@ -13,14 +13,21 @@
   padding: 60px;
 }
 
+.cd-fixed-bg.cd-fixed-bg--2 {
+  -webkit-box-shadow: inset 200px 200px 200px 10000px rgba(0, 0, 0, 0.2);
+          box-shadow: inset 200px 200px 200px 10000px rgba(0, 0, 0, 0.2);
+  background-image: url("../Images/bg.png");
+  padding: 60px;
+}
+
 .cd-scrolling-bg {
   min-height: 100%;
 }
 
 .stickypage {
   background-color: white;
-  width: 900px;
-  height: 1500px;
+  width: 1200px;
+  height: 2400px;
   padding: 50px;
   border-radius: 5px;
   margin: auto;
@@ -36,4 +43,24 @@ html {
   background-color: #fafafa;
   padding: 20px;
   border-radius: 10px;
+  width: 500px;
+  margin: auto;
+}
+
+.metadatalist {
+  border: 1px solid black;
+  height: 650px;
+  min-height: 650px;
+  overflow-y: auto;
+}
+
+.ownerslist {
+  border: 1px solid black;
+}
+
+.propertylist {
+  border: 1px solid black;
+  height: 450px;
+  min-height: 450px;
+  overflow-y: auto;
 }

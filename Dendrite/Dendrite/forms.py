@@ -56,3 +56,7 @@ class RaiseTender(FlaskForm):
     company_address = StringField('CompanyAddress', validators=[DataRequired()])
     file = FileField()
     submit = SubmitField('Raise Tender')
+
+class CheckOrigin(FlaskForm):
+    d_id = StringField('Dendrite ID', validators=[DataRequired()])
+    submit = SubmitField('Check Origin')

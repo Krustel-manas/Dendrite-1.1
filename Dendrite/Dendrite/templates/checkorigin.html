@@ -4,15 +4,80 @@
     {% if not current_user.is_authenticated %}
         <div class="cd-fixed-bg cd-fixed-bg--1">
             <div class="stickypage">
-                <h1>Check Product Origin</h1>
+                <center><h1>Check Product Origin</h1></center>
                 <br><br>
                 <form action="" method="post" class="frm">
-                    <label for="">Enter the Dendrite ID given on the product:</label>
-                    <input type="text" class="form-control" placeholder="Dendrite ID">
-                    <br>
-                    <input type="submit" value="Check Product Origin" class="btn btn-success btn-block">
+                    {{ form.hidden_tag()}}
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Enter the Dendrite ID</label>
+                        {% if form.d_id.errors %}
+                            {{ form.d_id(class="form-control is-invalid", placeholder="Enter Dendrite ID") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.d_id.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.d_id(class="form-control", placeholder="Enter Dendrite ID") }}
+                        {% endif %}
+                    </div>
+                    {{form.submit(class="btn btn-success btn-block")}}
                 </form>
+                <br>
+                <div class="showinfo">
+                    {% if data %}
+                        <h3>Properties</h3>
+                        <div class="propertylist">
+                            <div class="list-group">
+                                {% for property in data['asset']['Properties'] %}
+                                    <div href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1 text-primary">{{property['key']}}</h5>
+                                            <small>Selected by </small>
+                                        </div>
+                                        <p class="mb-1">{{property['value']}}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <br>
+                        <h3>Owners Before</h3>
+                        <div class="ownerslist">
+                            <div class="list-group">
+                                {% for owner in data['owners'] %}
+                                    <div href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1 text-primary">{{owner.role}}</h5>
+                                            <small>Selected by {{company}}</small>
+                                        </div>
+                                        <p class="mb-1">{{owner.username}}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <br>
+                        <h3>Metadata</h3>
+                        <div class="metadatalist">
+                            <div class="list-group">
+                                {% for x in data['metadata'] %}
+                                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1 text-primary">{{x['stage']}}</h5>
+                                        <small class="text-info">{{x['data']['timestamp']}}</small>
+                                        </div>
+                                        <p class="mb-1">{{x['data']['description']}}</p>
+                                        <small>{{x['data']['role']}}</small>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <h1>Enter ID</h1>
+                    {% endif %}
+                </div>
             </div>
+    </div>
+    <div class="cd-fixed-bg cd-fixed-bg--2">
     </div>
     {% else %}
         <h1>This Page cannot be viewed by anyone in the Supply Chain. Its only for Consumers</h1>
