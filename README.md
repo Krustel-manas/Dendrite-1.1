@@ -20,5 +20,5 @@ the GCP instances and there is no demo to show right now. We might make a versio
 this titanic sized shipwreck of a project
 
 ## Primary Collaborators
-@synapsecode
-@yajatvishwak
+"@synapsecode"
+"@yajatvishwak"
