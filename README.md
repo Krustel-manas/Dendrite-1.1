@@ -9,6 +9,7 @@ respective projects' supply chain.
 3. BigChainDB (A Blockchain based Database Solution)
 4. Tendermint
 5. Google Cloud Platform
+6. HTML, CSS & JavaScript
 
 ### This Project was built as a part of a 24 hour Hackathon named OakFest 2019 by Oakridge International School, Bangalore.
 
